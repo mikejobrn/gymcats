@@ -18,7 +18,7 @@ export default async function Dashboard() {
   const endOfToday = getEndOfDay(now)
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user?.email! },
+    where: { email: session.user?.email || '' },
     include: {
       dailyScores: {
         orderBy: { date: 'desc' },

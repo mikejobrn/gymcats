@@ -5,10 +5,17 @@ import { signOut } from 'next-auth/react'
 import { SimpleActivityButtons } from '@/components/simple-activity-buttons'
 import { ScoreDisplay } from '@/components/score-display'
 
+import { User, DailyScore, ActivityLog } from '@prisma/client'
+
+interface UserWithRelations extends User {
+  dailyScores: DailyScore[]
+  activityLogs: ActivityLog[]
+}
+
 interface DashboardClientProps {
-  user: any
-  todayScore: any
-  todayActivities: any[]
+  user: UserWithRelations
+  todayScore: DailyScore | undefined
+  todayActivities: ActivityLog[]
 }
 
 export function DashboardClient({ user, todayScore, todayActivities }: DashboardClientProps) {

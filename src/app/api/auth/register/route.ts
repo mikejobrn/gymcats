@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         hashedPassword,
         totalScore: 0,
         streakDays: 0,
-      } as any,
+      },
     })
 
     return NextResponse.json(

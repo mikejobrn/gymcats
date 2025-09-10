@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
           where: {
             email: credentials.email
           }
-        }) as any
+        })
 
         if (!user || !user.hashedPassword) {
           return null
