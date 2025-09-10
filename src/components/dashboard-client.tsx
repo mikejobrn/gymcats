@@ -87,7 +87,7 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
           <button
             onClick={() => signOut()}
             className="text-sm hover:text-pink-burnt transition-colors"
-            style={{color: '#000000'}}
+            style={{color: '#000000', cursor: 'pointer'}}
           >
             Sair
           </button>
