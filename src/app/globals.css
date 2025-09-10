@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a202c;
+  
+  /* Gymcats brand colors */
+  --pink-pastel: #FADADD;
+  --pink-burnt: #E75480;
+  --pink-medium: #FF69B4;
+  --pink-hot: #FF1493;
+  --gray-dark: #000000;     /* Preto total */
+  --gray-medium: #333333;   /* Cinza bem escuro */
+  --gray-light: #F7FAFC;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a202c;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: linear-gradient(135deg, var(--pink-pastel), var(--background));
+  color: var(--foreground);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--pink-pastel);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pink-burnt);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pink-hot);
+}
+
+/* Animations */
+@keyframes cat-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-15px);
+  }
+  70% {
+    transform: translateY(-5px);
+  }
+}
+
+.cat-bounce {
+  animation: cat-bounce 2s infinite;
+}
+
+/* Garantir contraste em inputs */
+input::placeholder {
+  color: #666666 !important;
+  opacity: 1;
+}
+
+input {
+  color: #000000 !important;
+}
+
+/* Garantir que todos os textos sejam bem visíveis */
+.text-gray-dark {
+  color: #000000 !important;
+}
+
+.border-gray-dark {
+  border-color: #333333 !important;
+}
