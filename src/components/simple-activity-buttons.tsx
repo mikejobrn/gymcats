@@ -9,9 +9,10 @@ interface SimpleActivityButtonsProps {
     resistance: boolean
     cardio: boolean
   }
+  activityTimes?: Record<'WATER'|'RESISTANCE'|'CARDIO', string | Date | undefined>
 }
 
-export function SimpleActivityButtons({ onActivityToggle, completedActivities }: SimpleActivityButtonsProps) {
+export function SimpleActivityButtons({ onActivityToggle, completedActivities, activityTimes }: SimpleActivityButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null)
 
   const activities = [
@@ -81,6 +82,13 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities }:
             {activity.completed && (
               <div className="text-xs font-bold text-pink-burnt">
                 ✅ FEITO HOJE
+                {activityTimes && activityTimes[activity.type] && (
+                  <span className="block mt-1">
+                    {typeof activityTimes[activity.type] === 'string'
+                      ? new Date(activityTimes[activity.type]!).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                      : (activityTimes[activity.type] as Date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
               </div>
             )}
           </button>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { signOut } from 'next-auth/react'
 import { SimpleActivityButtons } from '@/components/simple-activity-buttons'
 import { ScoreDisplay } from '@/components/score-display'
@@ -26,6 +26,8 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
     resistance: todayScore?.resistanceCompleted || false,
     cardio: todayScore?.cardioCompleted || false
   })
+  const [localTodayActivities, setLocalTodayActivities] = useState<ActivityLog[]>(todayActivities)
+  const [calendarRefreshKey, setCalendarRefreshKey] = useState(0)
 
   const handleActivityToggle = async (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => {
     try {
@@ -38,15 +40,36 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
       })
 
       if (response.ok) {
-        // Recarregar a página para pegar dados atualizados
-        window.location.reload()
+        // Buscar dados atualizados do usuário e score do dia
+        const userScoreRes = await fetch('/api/activities')
+        if (userScoreRes.ok) {
+          const { todayScore, totalScore, streakDays } = await userScoreRes.json()
+          setCurrentScore(todayScore?.score || 0)
+          setCompletedActivities({
+            water: todayScore?.waterCompleted || false,
+            resistance: todayScore?.resistanceCompleted || false,
+            cardio: todayScore?.cardioCompleted || false
+          })
+          user.totalScore = totalScore
+          user.streakDays = streakDays
+        }
+        // Buscar atividades do dia do backend
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const activitiesRes = await fetch(`/api/activities/logs?date=${today.toISOString().split('T')[0]}`)
+        if (activitiesRes.ok) {
+          const { activities } = await activitiesRes.json()
+          setLocalTodayActivities(activities)
+        }
+        // Forçar recarregamento do calendário
+        setCalendarRefreshKey((k) => k + 1)
       } else {
-        console.error('Erro ao registrar atividade')
+        console.error('Erro ao registrar atividade');
       }
     } catch (error) {
-      console.error('Erro ao registrar atividade:', error)
+      console.error('Erro ao registrar atividade:', error);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-pastel via-white to-pink-pastel">
@@ -78,57 +101,25 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
           streakDays={user.streakDays}
         />
 
+
         <SimpleActivityButtons 
           onActivityToggle={handleActivityToggle}
           completedActivities={completedActivities}
+          activityTimes={localTodayActivities.reduce((acc, act) => {
+            if (act.completed) acc[act.type] = act.date;
+            return acc;
+          }, {} as Record<'WATER'|'RESISTANCE'|'CARDIO', string | Date | undefined>)}
         />
 
-        {todayActivities.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-semibold mb-4" style={{color: '#000000'}}>
-              Atividades Marcadas Hoje
-            </h3>
-            <div className="space-y-3">
-              {todayActivities.map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">
-                      {activity.type === 'WATER' ? '💧' : 
-                       activity.type === 'RESISTANCE' ? '💪' : '🏃'}
-                    </span>
-                    <div>
-                      <p className="font-medium" style={{color: '#000000'}}>
-                        {activity.type === 'WATER' ? 'Água' : 
-                         activity.type === 'RESISTANCE' ? 'Resistência' : 'Cardio'}
-                      </p>
-                      <p className="text-sm" style={{color: '#000000'}}>
-                        {activity.completed ? 'Concluído' : 'Não concluído'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className="text-sm" style={{color: '#000000'}}>
-                      {new Date(activity.date).toLocaleTimeString('pt-BR', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                    {activity.completed && (
-                      <span className="text-xs text-pink-burnt font-bold">✅ FEITO</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
+  {/* Painel de atividades removido. */}
 
         {/* Calendário de Atividades */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h3 className="text-xl font-semibold mb-4" style={{color: '#000000'}}>
             Calendário de Atividades
           </h3>
-          <ActivityCalendar userId={user.id} />
+          <ActivityCalendar userId={user.id} key={calendarRefreshKey} />
         </div>
       </main>
     </div>
