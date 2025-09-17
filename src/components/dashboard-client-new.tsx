@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { signOut } from 'next-auth/react'
 import { SimpleActivityButtons } from '@/components/simple-activity-buttons'
 import { ScoreDisplay } from '@/components/score-display'
+import { Cat, Droplets, Dumbbell, Heart } from 'lucide-react'
 
 import { User, DailyScore, ActivityLog } from '@prisma/client'
 
@@ -52,7 +53,7 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-pink-burnt rounded-full flex items-center justify-center cat-bounce">
-              <span className="text-2xl">🐱</span>
+              <Cat className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold" style={{color: '#000000'}}>Gymcats</h1>
@@ -94,10 +95,10 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
               {todayActivities.map((activity, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">
-                      {activity.type === 'WATER' ? '💧' : 
-                       activity.type === 'RESISTANCE' ? '💪' : '🏃'}
-                    </span>
+                    <div>
+                      {activity.type === 'WATER' ? <Droplets className="w-6 h-6 text-blue-500" /> : 
+                       activity.type === 'RESISTANCE' ? <Dumbbell className="w-6 h-6 text-purple-500" /> : <Heart className="w-6 h-6 text-red-500" />}
+                    </div>
                     <div>
                       <p className="font-medium" style={{color: '#000000'}}>
                         {activity.type === 'WATER' ? 'Água' : 

@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
+import { BarChart3, Calendar, Trophy, LogOut, Cat } from "lucide-react";
 
 export function MainNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
 
   const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: "📊" },
-    { href: "/calendario", label: "Calendário", icon: "📅" },
-    { href: "/podio", label: "Pódio", icon: "🏆" },
+    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/calendario", label: "Calendário", icon: Calendar },
+    { href: "/podio", label: "Pódio", icon: Trophy },
   ];
 
   return (
@@ -21,7 +22,7 @@ export function MainNav() {
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/dashboard" className="text-2xl font-bold text-gray-dark flex items-center gap-2">
-              🐱 <span className="text-pink-burnt">Gymcats</span>
+              <Cat className="w-6 h-6" /> <span className="text-pink-burnt">Gymcats</span>
             </Link>
             
             <div className="flex items-center gap-4">
@@ -29,6 +30,7 @@ export function MainNav() {
               <div className="flex gap-2">
                 {navItems.map((item) => {
                   const isActive = pathname === item.href;
+                  const IconComponent = item.icon;
                   return (
                     <Link
                       key={item.href}
@@ -46,7 +48,7 @@ export function MainNav() {
                         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                       } : {}}
                     >
-                      <span className="text-sm">{item.icon}</span>
+                      <IconComponent className="w-4 h-4" />
                       <span className="hidden lg:inline">{item.label}</span>
                     </Link>
                   );
@@ -79,6 +81,7 @@ export function MainNav() {
         <div className="flex items-center justify-around py-2 px-4 safe-area-pb">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
+            const IconComponent = item.icon;
             return (
               <Link
                 key={item.href}
@@ -95,7 +98,7 @@ export function MainNav() {
                   color: '#ffffff'
                 } : {}}
               >
-                <span className="text-xl">{item.icon}</span>
+                <IconComponent className="w-5 h-5" />
                 <span className="text-xs font-medium truncate">{item.label}</span>
                 {isActive && (
                   <div className="w-4 h-1 bg-white rounded-full mt-1"></div>
@@ -109,9 +112,9 @@ export function MainNav() {
             <div className="flex flex-col items-center gap-1 py-2 px-3 rounded-lg transition-all duration-200 min-w-0 flex-1 mx-1">
               <button
                 onClick={() => signOut()}
-                className="text-xl"
+                className="text-gray-dark hover:text-pink-burnt"
               >
-                👋
+                <LogOut className="w-5 h-5" />
               </button>
               <span className="text-xs font-medium text-gray-dark truncate">Sair</span>
             </div>

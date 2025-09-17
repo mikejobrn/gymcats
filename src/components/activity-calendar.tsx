@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Droplets, Dumbbell, Heart } from 'lucide-react'
 
 interface CalendarProps {
   userId: string
@@ -163,13 +164,13 @@ export function ActivityCalendar({ userId }: CalendarProps) {
                   {activity && (
                     <div className="flex flex-wrap justify-center gap-0.5 sm:gap-1">
                       {activity.waterCompleted && (
-                        <span className="text-xs">💧</span>
+                        <Droplets className="w-3 h-3 text-blue-500" />
                       )}
                       {activity.resistanceCompleted && (
-                        <span className="text-xs">💪</span>
+                        <Dumbbell className="w-3 h-3 text-purple-500" />
                       )}
                       {activity.cardioCompleted && (
-                        <span className="text-xs">🏃</span>
+                        <Heart className="w-3 h-3 text-red-500" />
                       )}
                       {activity.totalScore > 0 && (
                         <div className="text-xs text-pink-burnt font-bold w-full">
@@ -188,15 +189,15 @@ export function ActivityCalendar({ userId }: CalendarProps) {
             <h4 className="text-sm font-medium mb-3 text-gray-dark">Legenda:</h4>
             <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-4 text-sm">
               <div className="flex items-center gap-2">
-                <span className="text-lg">💧</span>
+                <Droplets className="w-5 h-5 text-blue-500" />
                 <span className="text-gray-dark">Água</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">💪</span>
+                <Dumbbell className="w-5 h-5 text-purple-500" />
                 <span className="text-gray-dark">Resistência</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">🏃</span>
+                <Heart className="w-5 h-5 text-red-500" />
                 <span className="text-gray-dark">Cardio</span>
               </div>
               <div className="flex items-center gap-2 col-span-2 sm:col-span-1">

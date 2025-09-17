@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Droplets, Dumbbell, Heart } from 'lucide-react'
 
 const activitySchema = z.object({
   type: z.enum(['WATER', 'RESISTANCE', 'CARDIO']),
@@ -50,9 +51,9 @@ export function ActivityForm({ onActivityAdded }: ActivityFormProps) {
   }
 
   const activities = [
-    { type: 'WATER' as const, label: '💧 Água', unit: 'L', placeholder: '0.5' },
-    { type: 'RESISTANCE' as const, label: '💪 Resistência', unit: 'min', placeholder: '30' },
-    { type: 'CARDIO' as const, label: '🏃 Cardio', unit: 'min', placeholder: '20' }
+    { type: 'WATER' as const, label: 'Água', unit: 'L', placeholder: '0.5', icon: Droplets },
+    { type: 'RESISTANCE' as const, label: 'Resistência', unit: 'min', placeholder: '30', icon: Dumbbell },
+    { type: 'CARDIO' as const, label: 'Cardio', unit: 'min', placeholder: '20', icon: Heart }
   ]
 
   return (
@@ -68,21 +69,26 @@ export function ActivityForm({ onActivityAdded }: ActivityFormProps) {
             Tipo de Atividade
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {activities.map((activity) => (
-              <button
-                key={activity.type}
-                type="button"
-                onClick={() => setSelectedType(activity.type)}
-                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                  selectedType === activity.type
-                    ? 'border-pink-burnt bg-pink-pastel text-pink-burnt shadow-md'
-                    : 'border-gray-medium text-gray-dark hover:border-pink-medium hover:bg-pink-50'
-                }`}
-              >
-                <div className="text-2xl mb-2">{activity.label.split(' ')[0]}</div>
-                <div className="text-sm font-medium">{activity.label.split(' ')[1]}</div>
-              </button>
-            ))}
+            {activities.map((activity) => {
+              const IconComponent = activity.icon;
+              return (
+                <button
+                  key={activity.type}
+                  type="button"
+                  onClick={() => setSelectedType(activity.type)}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                    selectedType === activity.type
+                      ? 'border-pink-burnt bg-pink-pastel text-pink-burnt shadow-md'
+                      : 'border-gray-medium text-gray-dark hover:border-pink-medium hover:bg-pink-50'
+                  }`}
+                >
+                  <div className="mb-2">
+                    <IconComponent className="w-6 h-6 mx-auto" />
+                  </div>
+                  <div className="text-sm font-medium">{activity.label}</div>
+                </button>
+              );
+            })}
           </div>
           <input 
             type="hidden" 

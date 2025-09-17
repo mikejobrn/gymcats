@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { Medal, Award, Trophy, Crown, Flame, Cat, Dumbbell } from 'lucide-react'
 
 interface RankingUser {
   id: string
@@ -48,13 +49,13 @@ export default function PodioPage() {
   const getMedalIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return '🥇'
+        return <Trophy className="w-6 h-6 text-yellow-500" />
       case 2:
-        return '🥈'
+        return <Medal className="w-6 h-6 text-gray-400" />
       case 3:
-        return '🥉'
+        return <Award className="w-6 h-6 text-amber-600" />
       default:
-        return `#${rank}`
+        return <span className="text-lg font-bold text-gray-600">#{rank}</span>
     }
   }
 
@@ -104,9 +105,13 @@ export default function PodioPage() {
   if (!podiumData?.ranking.length) {
     return (
       <div className="max-w-4xl mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-8 text-center">🏆 Pódio GymCats</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-2">
+          <Trophy className="w-8 h-8 text-yellow-500" /> Pódio GymCats
+        </h1>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
-          <div className="text-6xl mb-4">😸</div>
+          <div className="mb-4">
+            <Cat className="w-16 h-16 mx-auto text-yellow-600" />
+          </div>
           <h2 className="text-xl font-semibold text-yellow-800 mb-2">
             Ainda não há gatinhas no pódio!
           </h2>
@@ -123,7 +128,9 @@ export default function PodioPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">🏆 Pódio GymCats</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-2">
+        <Trophy className="w-8 h-8 text-yellow-500" /> Pódio GymCats
+      </h1>
       
       {/* Top 3 Pódio Visual */}
       {topThree.length > 0 && (
@@ -133,7 +140,9 @@ export default function PodioPage() {
             {topThree[1] && (
               <div className="text-center">
                 <div className={`w-24 h-32 bg-gradient-to-b ${getMedalColor(2)} rounded-t-lg flex flex-col justify-end items-center p-2 border-2 border-gray-300`}>
-                  <div className="text-2xl mb-1">🥈</div>
+                  <div className="mb-1">
+                    <Medal className="w-6 h-6 mx-auto text-gray-400" />
+                  </div>
                   <div className="text-sm font-bold text-gray-700">2º</div>
                 </div>
                 <div className="mt-2 text-center">
@@ -144,7 +153,8 @@ export default function PodioPage() {
                     {topThree[1].totalScore}pts
                   </div>
                   <div className="text-orange-500 text-xs">
-                    🔥 {topThree[1].streakDays} dias
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  {" "}{topThree[1].streakDays} dias
                   </div>
                 </div>
               </div>
@@ -153,7 +163,9 @@ export default function PodioPage() {
             {/* 1º Lugar */}
             <div className="text-center">
               <div className={`w-28 h-40 bg-gradient-to-b ${getMedalColor(1)} rounded-t-lg flex flex-col justify-end items-center p-2 border-4 border-yellow-400 shadow-lg`}>
-                <div className="text-3xl mb-1">👑</div>
+                <div className="mb-1">
+                  <Crown className="w-8 h-8 mx-auto text-yellow-500" />
+                </div>
                 <div className="text-lg font-bold text-yellow-800">1º</div>
               </div>
               <div className="mt-2 text-center">
@@ -164,7 +176,8 @@ export default function PodioPage() {
                   {topThree[0].totalScore}pts
                 </div>
                 <div className="text-orange-500 text-sm">
-                  🔥 {topThree[0].streakDays} dias
+                <Flame className="w-4 h-4 text-orange-500" />
+                {" "}{topThree[0].streakDays} dias
                 </div>
               </div>
             </div>
@@ -173,7 +186,9 @@ export default function PodioPage() {
             {topThree[2] && (
               <div className="text-center">
                 <div className={`w-24 h-28 bg-gradient-to-b ${getMedalColor(3)} rounded-t-lg flex flex-col justify-end items-center p-2 border-2 border-orange-400`}>
-                  <div className="text-2xl mb-1">🥉</div>
+                  <div className="mb-1">
+                    <Award className="w-6 h-6 mx-auto text-amber-600" />
+                  </div>
                   <div className="text-sm font-bold text-orange-700">3º</div>
                 </div>
                 <div className="mt-2 text-center">
@@ -184,7 +199,8 @@ export default function PodioPage() {
                     {topThree[2].totalScore}pts
                   </div>
                   <div className="text-orange-500 text-xs">
-                    🔥 {topThree[2].streakDays} dias
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  {" "}{topThree[2].streakDays} dias
                   </div>
                 </div>
               </div>
@@ -239,7 +255,7 @@ export default function PodioPage() {
                 {user.totalScore} pts
               </div>
               <div className="text-sm text-orange-500 flex items-center justify-end space-x-1">
-                <span>🔥</span>
+                <Flame className="w-4 h-4 text-orange-500" />
                 <span>{user.streakDays} dias</span>
               </div>
             </div>
@@ -250,7 +266,9 @@ export default function PodioPage() {
       {/* Motivação para usuários sem pontos */}
       {podiumData.ranking.length < 10 && (
         <div className="mt-8 p-6 bg-purple-50 border border-purple-200 rounded-lg text-center">
-          <div className="text-4xl mb-3">💪</div>
+          <div className="mb-3">
+            <Dumbbell className="w-10 h-10 mx-auto text-purple-500" />
+          </div>
           <h3 className="text-lg font-semibold text-purple-800 mb-2">
             Conquiste seu lugar no pódio!
           </h3>

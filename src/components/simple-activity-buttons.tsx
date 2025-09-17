@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { Droplets, Dumbbell, Heart } from 'lucide-react'
 
 interface SimpleActivityButtonsProps {
   onActivityToggle: (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => void
@@ -19,23 +20,23 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
     {
       type: 'WATER' as const,
       label: 'Água',
-      emoji: '💧',
+      icon: Droplets,
       completed: completedActivities.water,
       description: 'Marcar como bebida'
     },
     {
       type: 'RESISTANCE' as const, 
       label: 'Resistência',
-      emoji: '💪',
+      icon: Dumbbell,
       completed: completedActivities.resistance,
       description: 'Marcar treino feito'
     },
     {
       type: 'CARDIO' as const,
       label: 'Cardio', 
-      emoji: '🏃',
+      icon: Heart,
       completed: completedActivities.cardio,
-      description: 'Marcar cardio feito'
+      description: 'Marcar atividade feita'
     }
   ]
 
@@ -70,7 +71,9 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
               ${isLoading === activity.type ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
             `}
           >
-            <div className="text-3xl md:text-4xl mb-2">{activity.emoji}</div>
+            <div className="mb-2">
+              {React.createElement(activity.icon, { className: "w-8 h-8 md:w-10 md:h-10 mx-auto" })}
+            </div>
             <div className="font-semibold text-lg text-gray-dark">{activity.label}</div>
             <div className={`text-sm ${activity.completed ? 'text-pink-burnt' : 'text-gray-medium'}`}>
               {isLoading === activity.type ? 'Processando...' : activity.description}

@@ -1,3 +1,5 @@
+import { Flame } from 'lucide-react'
+
 interface ScoreDisplayProps {
   currentScore: number
   totalScore: number
@@ -29,7 +31,7 @@ export function ScoreDisplay({ currentScore, totalScore, streakDays }: ScoreDisp
       
       {streakDays >= 3 && (
         <div className="mt-6 p-4 bg-gradient-to-r from-pink-burnt to-pink-hot rounded-xl text-center shadow-md">
-          <span className="text-3xl">🔥</span>
+          <Flame className="w-8 h-8 text-white mx-auto" />
           <p className="font-semibold mt-2 text-white text-lg">
             {streakDays >= 5 ? 'Gatinha em chamas! 5+ dias!' : 'Sequência incrível! 3+ dias!'}
           </p>
