@@ -49,38 +49,34 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-      <h3 className="text-xl font-semibold mb-6" style={{color: '#000000'}}>
+    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
+      <h3 className="text-xl font-semibold mb-6 text-gray-dark">
         Marcar Atividades de Hoje
       </h3>
       
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {activities.map((activity) => (
           <button
             key={activity.type}
             onClick={() => handleActivityClick(activity.type)}
             disabled={isLoading === activity.type}
             className={`
-              p-6 rounded-xl border-2 transition-all duration-200 
+              p-4 md:p-6 rounded-xl border-2 transition-all duration-200 
               flex flex-col items-center gap-3 text-center
               ${activity.completed 
-                ? 'border-pink-burnt bg-pink-pastel text-pink-burnt' 
-                : 'border-gray-300 hover:border-pink-medium hover:bg-pink-50'
+                ? 'border-pink-burnt bg-pink-pastel shadow-md' 
+                : 'border-gray-medium bg-white hover:border-pink-medium hover:bg-pink-50 hover:shadow-md'
               }
-              ${isLoading === activity.type ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
+              ${isLoading === activity.type ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
             `}
-            style={{
-              borderColor: activity.completed ? '#E75480' : '#333333',
-              color: activity.completed ? '#E75480' : '#000000'
-            }}
           >
-            <div className="text-4xl mb-2">{activity.emoji}</div>
-            <div className="font-semibold text-lg">{activity.label}</div>
-            <div className="text-sm opacity-80">
+            <div className="text-3xl md:text-4xl mb-2">{activity.emoji}</div>
+            <div className="font-semibold text-lg text-gray-dark">{activity.label}</div>
+            <div className={`text-sm ${activity.completed ? 'text-pink-burnt' : 'text-gray-medium'}`}>
               {isLoading === activity.type ? 'Processando...' : activity.description}
             </div>
             {activity.completed && (
-              <div className="text-xs font-bold text-pink-burnt">
+              <div className="text-xs font-bold text-pink-burnt bg-white/80 px-3 py-1 rounded-full">
                 ✅ FEITO HOJE
                 {activityTimes && activityTimes[activity.type] && (
                   <span className="block mt-1">
@@ -96,7 +92,7 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
       </div>
 
       <div className="mt-6 text-center">
-        <p className="text-sm" style={{color: '#666666'}}>
+        <p className="text-sm text-gray-medium">
           Clique nos botões acima para marcar suas atividades como concluídas hoje
         </p>
       </div>

@@ -1,31 +1,81 @@
 @import "tailwindcss";
 
+/* Light mode (default) - Force dark text */
 :root {
-  --background: #ffffff;
-  --foreground: #1a202c;
+  --background: #ffffff !important;        /* White background for light mode */
+  --foreground: #1a1a1a !important;        /* Dark text for light mode (good contrast) */
   
-  /* Gymcats brand colors */
+  /* Gymcats brand colors - Improved contrast */
   --pink-pastel: #FADADD;
   --pink-burnt: #E75480;
   --pink-medium: #FF69B4;
   --pink-hot: #FF1493;
-  --gray-dark: #000000;     /* Preto total */
-  --gray-medium: #333333;   /* Cinza bem escuro */
+  --gray-dark: #1a1a1a;     /* Almost black for excellent contrast */
+  --gray-medium: #4a5568;   /* Dark gray for secondary text */
+  --gray-text: #2d3748;     /* Dark gray for readable text */
   --gray-light: #F7FAFC;
+  --gray-border: #e2e8f0;   /* Light gray for borders */
 }
 
+/* Force light mode for now - remove dark mode auto-detection */
+/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #1a202c;
-    --foreground: #ededed;
+    --foreground: #f7fafc;
+    --gray-dark: #f7fafc;
+    --gray-medium: #cbd5e0;
+    --gray-text: #e2e8f0;
+    --gray-light: #2d3748;
+    --gray-border: #4a5568;
   }
+}
+*/
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: linear-gradient(135deg, var(--pink-pastel), var(--background));
-  color: var(--foreground);
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  color: #1a1a1a; /* Force dark text color for better contrast */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile-first responsive padding */
+.container {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 2rem;
+  }
+}
+
+/* Safe area for mobile devices */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-pt {
+  padding-top: env(safe-area-inset-top);
 }
 
 /* Custom scrollbar */
@@ -63,21 +113,120 @@ body {
   animation: cat-bounce 2s infinite;
 }
 
-/* Garantir contraste em inputs */
-input::placeholder {
-  color: #666666 !important;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Form elements with better contrast */
+input, textarea, select {
+  color: var(--gray-dark) !important;
+  background-color: white !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--gray-medium) !important;
   opacity: 1;
 }
 
-input {
-  color: #000000 !important;
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--pink-burnt) !important;
+  box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1) !important;
 }
 
-/* Garantir que todos os textos sejam bem visíveis */
-.text-gray-dark {
-  color: #000000 !important;
+/* Button improvements */
+button {
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.border-gray-dark {
-  border-color: #333333 !important;
+button:active {
+  transform: scale(0.98);
+}
+
+/* Utility classes for consistent text colors */
+.text-primary {
+  color: var(--gray-dark) !important;
+}
+
+.text-secondary {
+  color: var(--gray-medium) !important;
+}
+
+.text-muted {
+  color: var(--gray-text) !important;
+}
+
+.border-primary {
+  border-color: var(--gray-dark) !important;
+}
+
+.border-secondary {
+  border-color: var(--gray-border) !important;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--pink-burnt);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --gray-dark: #000000;
+    --gray-medium: #333333;
+    --gray-text: #1a1a1a;
+  }
+  
+  .border-gray-300 {
+    border-color: #666666 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Force generate Tailwind classes for navigation */
+.bg-pink-burnt {
+  background-color: #E75480 !important;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }

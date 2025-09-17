@@ -16,10 +16,11 @@ const config: Config = {
         'pink-burnt': '#E75480',
         'pink-medium': '#FF69B4',
         'pink-hot': '#FF1493',
-        'gray-dark': '#000000',      // Preto total para máximo contraste
-        'gray-medium': '#333333',    // Cinza bem escuro
-        'gray-text': '#1a1a1a',     // Quase preto
-        'gray-light': '#F7FAFC',
+        'gray-dark': 'var(--gray-dark)',      // Use CSS variable for consistency
+        'gray-medium': 'var(--gray-medium)',  // Use CSS variable for consistency
+        'gray-text': 'var(--gray-text)',     // Use CSS variable for consistency
+        'gray-light': 'var(--gray-light)',
+        'gray-border': 'var(--gray-border)',
       },
       fontFamily: {
         'cat': ['Comic Sans MS', 'cursive'],

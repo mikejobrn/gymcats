@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { signOut } from 'next-auth/react'
 import { SimpleActivityButtons } from '@/components/simple-activity-buttons'
 import { ScoreDisplay } from '@/components/score-display'
 import { ActivityCalendar } from '@/components/activity-calendar'
@@ -73,34 +72,12 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-pastel via-white to-pink-pastel">
-      <header className="bg-white shadow-lg">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-pink-burnt rounded-full flex items-center justify-center cat-bounce">
-              <span className="text-2xl">🐱</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold" style={{color: '#000000'}}>Gymcats</h1>
-              <p className="text-sm" style={{color: '#000000'}}>Olá, {user.name}!</p>
-            </div>
-          </div>
-          <button
-            onClick={() => signOut()}
-            className="text-sm hover:text-pink-burnt transition-colors"
-            style={{color: '#000000', cursor: 'pointer'}}
-          >
-            Sair
-          </button>
-        </div>
-      </header>
-
       <main className="max-w-4xl mx-auto px-4 py-8">
         <ScoreDisplay 
           currentScore={currentScore}
           totalScore={user.totalScore}
           streakDays={user.streakDays}
         />
-
 
         <SimpleActivityButtons 
           onActivityToggle={handleActivityToggle}
@@ -111,16 +88,7 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
           }, {} as Record<'WATER'|'RESISTANCE'|'CARDIO', string | Date | undefined>)}
         />
 
-
-  {/* Painel de atividades removido. */}
-
-        {/* Calendário de Atividades */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-semibold mb-4" style={{color: '#000000'}}>
-            Calendário de Atividades
-          </h3>
-          <ActivityCalendar userId={user.id} key={calendarRefreshKey} />
-        </div>
+        {/* Calendário de Atividades movido para página própria */}
       </main>
     </div>
   )

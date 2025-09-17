@@ -91,52 +91,53 @@ export function ActivityCalendar({ userId }: CalendarProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold" style={{color: '#000000'}}>
+    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <h3 className="text-xl font-semibold text-gray-dark">
           Calendário de Atividades
         </h3>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
           <button
             onClick={previousMonth}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            style={{color: '#000000'}}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-dark flex-shrink-0"
           >
-            ← Anterior
+            <span className="text-lg">←</span>
+            <span className="hidden sm:inline ml-1">Anterior</span>
           </button>
-          <span className="text-lg font-medium min-w-48 text-center" style={{color: '#000000'}}>
+          <span className="text-base sm:text-lg font-medium text-center text-gray-dark flex-1 sm:min-w-48">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </span>
           <button
             onClick={nextMonth}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            style={{color: '#000000'}}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-dark flex-shrink-0"
           >
-            Próximo →
+            <span className="hidden sm:inline mr-1">Próximo</span>
+            <span className="text-lg">→</span>
           </button>
         </div>
       </div>
 
       {isLoading ? (
         <div className="text-center py-8">
-          <p style={{color: '#666666'}}>Carregando calendário...</p>
+          <p className="text-gray-medium">Carregando calendário...</p>
         </div>
       ) : (
         <>
           {/* Cabeçalho dos dias da semana */}
-          <div className="grid grid-cols-7 gap-2 mb-2">
+          <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
             {dayNames.map(day => (
-              <div key={day} className="text-center p-2 font-medium text-sm" style={{color: '#666666'}}>
-                {day}
+              <div key={day} className="text-center p-1 sm:p-2 font-medium text-xs sm:text-sm text-gray-medium">
+                <span className="hidden sm:inline">{day}</span>
+                <span className="sm:hidden">{day.substring(0, 1)}</span>
               </div>
             ))}
           </div>
 
           {/* Grade do calendário */}
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1 sm:gap-2">
             {days.map((day, index) => {
               if (!day) {
-                return <div key={index} className="p-2"></div>
+                return <div key={index} className="p-1 sm:p-2"></div>
               }
 
               const activity = getActivityForDate(day)
@@ -146,16 +147,21 @@ export function ActivityCalendar({ userId }: CalendarProps) {
                 <div
                   key={day.toISOString()}
                   className={`
-                    p-2 min-h-16 border rounded-lg transition-all hover:shadow-md
-                    ${isCurrentDay ? 'border-pink-burnt bg-pink-pastel' : 'border-gray-200 hover:border-gray-300'}
+                    p-1 sm:p-2 min-h-12 sm:min-h-16 border rounded-lg transition-all hover:shadow-md text-center
+                    ${isCurrentDay 
+                      ? 'border-pink-burnt bg-pink-pastel border-2' 
+                      : 'border-gray-300 hover:border-pink-medium bg-white'
+                    }
                   `}
                 >
-                  <div className="text-sm font-medium mb-1" style={{color: isCurrentDay ? '#E75480' : '#000000'}}>
+                  <div className={`text-xs sm:text-sm font-medium mb-1 ${
+                    isCurrentDay ? 'text-pink-burnt font-bold' : 'text-gray-dark'
+                  }`}>
                     {day.getDate()}
                   </div>
                   
                   {activity && (
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap justify-center gap-0.5 sm:gap-1">
                       {activity.waterCompleted && (
                         <span className="text-xs">💧</span>
                       )}
@@ -166,7 +172,7 @@ export function ActivityCalendar({ userId }: CalendarProps) {
                         <span className="text-xs">🏃</span>
                       )}
                       {activity.totalScore > 0 && (
-                        <div className="text-xs text-pink-burnt font-bold">
+                        <div className="text-xs text-pink-burnt font-bold w-full">
                           {activity.totalScore}pts
                         </div>
                       )}
@@ -178,24 +184,24 @@ export function ActivityCalendar({ userId }: CalendarProps) {
           </div>
 
           {/* Legenda */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="text-sm font-medium mb-2" style={{color: '#000000'}}>Legenda:</h4>
-            <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <span>💧</span>
-                <span style={{color: '#666666'}}>Água</span>
+          <div className="mt-6 p-4 bg-gray-light rounded-lg">
+            <h4 className="text-sm font-medium mb-3 text-gray-dark">Legenda:</h4>
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">💧</span>
+                <span className="text-gray-dark">Água</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span>💪</span>
-                <span style={{color: '#666666'}}>Resistência</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">💪</span>
+                <span className="text-gray-dark">Resistência</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span>🏃</span>
-                <span style={{color: '#666666'}}>Cardio</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🏃</span>
+                <span className="text-gray-dark">Cardio</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span className="w-3 h-3 bg-pink-pastel border border-pink-burnt rounded"></span>
-                <span style={{color: '#666666'}}>Hoje</span>
+              <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                <span className="w-4 h-4 bg-pink-pastel border-2 border-pink-burnt rounded"></span>
+                <span className="text-gray-dark">Hoje</span>
               </div>
             </div>
           </div>

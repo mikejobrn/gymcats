@@ -56,7 +56,7 @@ export function ActivityForm({ onActivityAdded }: ActivityFormProps) {
   ]
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
       <h3 className="text-xl font-semibold text-gray-dark mb-6">
         Registrar Atividade
       </h3>
@@ -67,16 +67,16 @@ export function ActivityForm({ onActivityAdded }: ActivityFormProps) {
           <label className="block text-sm font-medium text-gray-dark mb-3">
             Tipo de Atividade
           </label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {activities.map((activity) => (
               <button
                 key={activity.type}
                 type="button"
                 onClick={() => setSelectedType(activity.type)}
-                className={`p-4 rounded-xl border-2 transition-all ${
+                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   selectedType === activity.type
-                    ? 'border-pink-burnt bg-pink-pastel text-pink-burnt'
-                    : 'border-gray-dark hover:border-pink-medium'
+                    ? 'border-pink-burnt bg-pink-pastel text-pink-burnt shadow-md'
+                    : 'border-gray-medium text-gray-dark hover:border-pink-medium hover:bg-pink-50'
                 }`}
               >
                 <div className="text-2xl mb-2">{activity.label.split(' ')[0]}</div>
@@ -101,10 +101,10 @@ export function ActivityForm({ onActivityAdded }: ActivityFormProps) {
             step="0.1"
             placeholder={activities.find(a => a.type === selectedType)?.placeholder}
             {...register('value', { valueAsNumber: true })}
-            className="w-full p-3 border border-gray-dark rounded-xl focus:ring-2 focus:ring-pink-burnt focus:border-transparent text-gray-dark"
+            className="w-full p-3 border-2 border-gray-medium rounded-xl focus:ring-2 focus:ring-pink-burnt focus:border-pink-burnt transition-colors text-gray-dark placeholder-gray-medium"
           />
           {errors.value && (
-            <p className="mt-1 text-sm text-red-600">{errors.value.message}</p>
+            <p className="mt-1 text-sm text-red-600 font-medium">{errors.value.message}</p>
           )}
         </div>
 
@@ -112,7 +112,7 @@ export function ActivityForm({ onActivityAdded }: ActivityFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-pink-burnt text-white py-3 px-6 rounded-xl hover:bg-pink-hot transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-pink-burnt text-white py-3 px-6 rounded-xl hover:bg-pink-hot transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-md hover:shadow-lg active:scale-95"
         >
           {isSubmitting ? 'Registrando...' : 'Registrar Atividade'}
         </button>
