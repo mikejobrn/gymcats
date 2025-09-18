@@ -127,9 +127,10 @@ export default function PodioPage() {
   const others = podiumData.ranking.slice(3)
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="max-w-2xl mx-auto pt-16 md:pt-6">
+      <div className='bg-white rounded-2xl shadow-lg px-2 py-4 md:p-6 mb-8 m-2'>
       <h1 className="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-2">
-        <Trophy className="w-8 h-8 text-yellow-500" /> Pódio GymCats
+        Pódio
       </h1>
       
       {/* Top 3 Pódio Visual */}
@@ -138,12 +139,12 @@ export default function PodioPage() {
           <div className="flex justify-center items-end space-x-4 mb-8">
             {/* 2º Lugar */}
             {topThree[1] && (
-              <div className="text-center">
-                <div className={`w-24 h-32 bg-gradient-to-b ${getMedalColor(2)} rounded-t-lg flex flex-col justify-end items-center p-2 border-2 border-gray-300`}>
+              <div className="text-right flex flex-col items-end">
+                <div className={`w-14 md:w-24 h-32 bg-gradient-to-b ${getMedalColor(2)} rounded-t-lg flex flex-col justify-end items-center p-2 border-2 border-gray-300`}>
                   <div className="mb-1">
-                    <Medal className="w-6 h-6 mx-auto text-gray-400" />
+                    <Medal className="w-8 h-8 mx-auto text-gray-300" />
                   </div>
-                  <div className="text-sm font-bold text-gray-700">2º</div>
+                  <div className="text-sm font-bold text-white">2º</div>
                 </div>
                 <div className="mt-2 text-center">
                   <div className="font-semibold text-sm truncate w-24">
@@ -161,12 +162,12 @@ export default function PodioPage() {
             )}
 
             {/* 1º Lugar */}
-            <div className="text-center">
-              <div className={`w-28 h-40 bg-gradient-to-b ${getMedalColor(1)} rounded-t-lg flex flex-col justify-end items-center p-2 border-4 border-yellow-400 shadow-lg`}>
+            <div className="text-center  flex flex-col items-center">
+              <div className={`w-18 md:w-28 h-40 bg-gradient-to-b ${getMedalColor(1)} rounded-t-lg flex flex-col justify-end items-center p-2 border-4 border-yellow-400 shadow-lg`}>
                 <div className="mb-1">
-                  <Crown className="w-8 h-8 mx-auto text-yellow-500" />
+                  <Crown className="w-8 h-8 mx-auto text-yellow-400" />
                 </div>
-                <div className="text-lg font-bold text-yellow-800">1º</div>
+                <div className="text-lg font-bold text-white">1º</div>
               </div>
               <div className="mt-2 text-center">
                 <div className="font-bold text-base truncate w-28">
@@ -184,12 +185,12 @@ export default function PodioPage() {
 
             {/* 3º Lugar */}
             {topThree[2] && (
-              <div className="text-center">
-                <div className={`w-24 h-28 bg-gradient-to-b ${getMedalColor(3)} rounded-t-lg flex flex-col justify-end items-center p-2 border-2 border-orange-400`}>
+              <div className="text-left  flex flex-col items-start">
+                <div className={`w-14 md:w-24 h-28 bg-gradient-to-b ${getMedalColor(3)} rounded-t-lg flex flex-col justify-end items-center p-2 border-2 border-orange-400`}>
                   <div className="mb-1">
-                    <Award className="w-6 h-6 mx-auto text-amber-600" />
+                    <Award className="w-8 h-8 mx-auto text-amber-700" />
                   </div>
-                  <div className="text-sm font-bold text-orange-700">3º</div>
+                  <div className="text-sm font-bold text-white">3º</div>
                 </div>
                 <div className="mt-2 text-center">
                   <div className="font-semibold text-sm truncate w-24">
@@ -277,6 +278,7 @@ export default function PodioPage() {
           </p>
         </div>
       )}
+      </div>
     </div>
   )
 }

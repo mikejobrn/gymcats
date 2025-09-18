@@ -88,7 +88,7 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-pastel via-white to-pink-pastel">
+    <div className="min-h-screen bg-gradient-to-br from-pink-pastel via-white to-pink-pastel pt-8 md:pt-0">
       <main className="max-w-4xl mx-auto px-4 py-8">
         <ScoreDisplay 
           currentScore={currentScore}

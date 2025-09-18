@@ -92,9 +92,9 @@ export function ActivityCalendar({ userId }: CalendarProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <h3 className="text-xl font-semibold text-gray-dark">
+    <div className="bg-white rounded-2xl shadow-lg px-2 py-4 md:p-6 mb-8 m-1">
+      <div className="flex flex-col sm:flex-col items-center justify-between gap-4 mb-6">
+        <h3 className="text-xl text-center font-semibold text-gray-dark flex-1">
           Calendário de Atividades
         </h3>
         <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
@@ -150,7 +150,7 @@ export function ActivityCalendar({ userId }: CalendarProps) {
                   className={`
                     p-1 sm:p-2 min-h-12 sm:min-h-16 border rounded-lg transition-all hover:shadow-md text-center
                     ${isCurrentDay 
-                      ? 'border-pink-burnt bg-pink-pastel border-2' 
+                      ? 'border-pink-500 bg-pink-pastel border-2' 
                       : 'border-gray-300 hover:border-pink-medium bg-white'
                     }
                   `}
@@ -161,16 +161,16 @@ export function ActivityCalendar({ userId }: CalendarProps) {
                     {day.getDate()}
                   </div>
                   
-                  {activity && (
+                  {(activity && (
                     <div className="flex flex-wrap justify-center gap-0.5 sm:gap-1">
                       {activity.waterCompleted && (
-                        <Droplets className="w-3 h-3 text-blue-500" />
+                        <Droplets className="w-2 h-2 sm:w-4 sm:h-4 text-blue-500" />
                       )}
                       {activity.resistanceCompleted && (
-                        <Dumbbell className="w-3 h-3 text-purple-500" />
+                        <Dumbbell className="w-2 h-2 sm:w-4 sm:h-4 text-purple-500" />
                       )}
                       {activity.cardioCompleted && (
-                        <Heart className="w-3 h-3 text-red-500" />
+                        <Heart className="w-2 h-2 sm:w-4 sm:h-4 text-red-500" />
                       )}
                       {activity.totalScore > 0 && (
                         <div className="text-xs text-pink-burnt font-bold w-full">
@@ -178,32 +178,32 @@ export function ActivityCalendar({ userId }: CalendarProps) {
                         </div>
                       )}
                     </div>
-                  )}
+                  )) || <span className='text-white'>.</span>}                  
                 </div>
               )
             })}
           </div>
 
           {/* Legenda */}
-          <div className="mt-6 p-4 bg-gray-light rounded-lg">
-            <h4 className="text-sm font-medium mb-3 text-gray-dark">Legenda:</h4>
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-4 text-sm">
-              <div className="flex items-center gap-2">
+          <div className="mt-6  bg-gray-light rounded-full">
+            {/* <h4 className="text-sm font-medium mb-3 text-gray-dark">Legenda:</h4> */}
+            <div className="text-sm flex justify-between bg-pink-50 p-4 rounded-full">
+              <div className="flex items-center gap-1">
                 <Droplets className="w-5 h-5 text-blue-500" />
                 <span className="text-gray-dark">Água</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Dumbbell className="w-5 h-5 text-purple-500" />
                 <span className="text-gray-dark">Resistência</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Heart className="w-5 h-5 text-red-500" />
                 <span className="text-gray-dark">Cardio</span>
               </div>
-              <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+              {/* <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
                 <span className="w-4 h-4 bg-pink-pastel border-2 border-pink-burnt rounded"></span>
                 <span className="text-gray-dark">Hoje</span>
-              </div>
+              </div> */}
             </div>
           </div>
         </>

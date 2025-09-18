@@ -57,7 +57,7 @@ export interface ActivityFormData {
   value: number
 }
 
-export interface DashboardStats {
+export interface PainelStats {
   todayScore: number
   totalScore: number
   streakDays: number

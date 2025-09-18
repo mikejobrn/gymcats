@@ -10,7 +10,7 @@ export function MainNav() {
   const { data: session } = useSession();
 
   const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+  { href: "/painel", label: "Painel", icon: BarChart3 },
     { href: "/calendario", label: "Calendário", icon: Calendar },
     { href: "/podio", label: "Pódio", icon: Trophy },
   ];
@@ -21,7 +21,7 @@ export function MainNav() {
       <nav className="hidden md:block w-full bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="text-2xl font-bold text-gray-dark flex items-center gap-2">
+            <Link href="/painel" className="text-2xl font-bold text-gray-dark flex items-center gap-2">
               <Cat className="w-6 h-6" /> <span className="text-pink-burnt">Gymcats</span>
             </Link>
             
@@ -73,6 +73,15 @@ export function MainNav() {
               )}
             </div>
           </div>
+        </div>
+      </nav>
+
+      {/* Mobile Top Navigation */}
+      <nav className="md:hidden fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 z-50 shadow-xl  pt-0 pb-2">
+        <div className="flex items-center justify-around py-2 px-4 safe-area-pb">
+          <Link href="/painel" className="text-2xl font-bold text-gray-dark flex items-center gap-2">
+            <Cat className="w-6 h-6" /> <span className="text-pink-burnt">Gymcats</span>
+          </Link>
         </div>
       </nav>
 

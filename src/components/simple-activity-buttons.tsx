@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { Droplets, Dumbbell, Heart } from 'lucide-react'
 import { format, addHours } from 'date-fns'
+import bg from 'zod/v4/locales/bg.cjs'
 
 interface SimpleActivityButtonsProps {
   onActivityToggle: (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => void
@@ -22,18 +23,27 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
       type: 'WATER' as const,
       label: 'Água',
       icon: Droplets,
+      bgColorClass: 'bg-blue-500',
+      bgHoverClass: 'hover:bg-blue-400',
+      colorClass: 'text-blue-100',
       completed: completedActivities.water,
     },
     {
       type: 'RESISTANCE' as const, 
       label: 'Resistência',
       icon: Dumbbell,
+      bgColorClass: 'bg-purple-500',
+      bgHoverClass: 'hover:bg-purple-400',
+      colorClass: 'text-purple-100',
       completed: completedActivities.resistance,
     },
     {
       type: 'CARDIO' as const,
       label: 'Cardio', 
       icon: Heart,
+      bgColorClass: 'bg-red-500',
+      bgHoverClass: 'hover:bg-red-400',
+      colorClass: 'text-red-100',
       completed: completedActivities.cardio,
     }
   ]
@@ -63,18 +73,18 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
               p-4 md:p-6 rounded-xl border-2 transition-all duration-200 
               flex flex-row items-center gap-3 text-center
               ${activity.completed 
-                ? 'border-green-600 bg-white shadow-lg' 
-                : 'border-gray-medium bg-white hover:border-pink-medium hover:bg-pink-50 shadow-lg'
+                ? `border-green-600 bg-white shadow-lg` 
+                : `border-gray-medium ${activity.bgColorClass} hover:border-pink-medium ${activity.bgHoverClass} shadow-lg`
               }
               ${isLoading === activity.type ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
             `}
           >
-            <div className="mb-2">
+            <div className={`mb-2 ${activity.colorClass}`}>
               {React.createElement(activity.icon, { 
                 className: `w-8 h-8 md:w-10 md:h-10 mx-auto ${activity.completed ? 'text-green-600' : ''}` 
               })}
             </div>
-            <div className={`font-semibold text-lg ${activity.completed ? 'text-green-600' : 'text-gray-dark'}`}>
+            <div className={`font-semibold text-lg ${activity.completed ? 'text-green-600' : activity.colorClass}`}>
               {activity.label}
             </div>
             {activity.completed && (

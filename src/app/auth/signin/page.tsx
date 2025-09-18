@@ -19,7 +19,7 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
     try {
-      await signIn('google', { callbackUrl: '/dashboard' })
+  await signIn('google', { callbackUrl: '/painel' })
     } catch (error) {
       console.error('Error signing in:', error)
     } finally {
@@ -52,7 +52,7 @@ export default function SignIn() {
           })
 
           if (result?.ok) {
-            router.push('/dashboard')
+            router.push('/painel')
           } else {
             setError('Erro ao fazer login após registro')
           }
@@ -69,7 +69,7 @@ export default function SignIn() {
         })
 
         if (result?.ok) {
-          router.push('/dashboard')
+          router.push('/painel')
         } else {
           setError('Email ou senha incorretos')
         }

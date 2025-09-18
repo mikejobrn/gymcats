@@ -14,7 +14,7 @@ Uma aplicação web progressiva (PWA) gamificada para estabelecer e manter hábi
 - **Bônus por Consistência**:
   - 3 dias consecutivos = +3 pts
   - 5 dias consecutivos = +5 pts
-- **Dashboard Interativo**: Registro e visualização de atividades
+- **Painel Interativo**: Registro e visualização de atividades
 - **Histórico de Atividades**: Acompanhamento diário
 - **Sequência (Streak)**: Contador de dias consecutivos
 - **Interface Responsiva**: Design mobile-first
@@ -150,7 +150,7 @@ src/
 ├── app/                    # App Router (Next.js 13+)
 │   ├── api/               # API Routes
 │   ├── auth/              # Páginas de autenticação
-│   ├── dashboard/         # Dashboard principal
+│   ├── painel/         # Painel principal
 │   └── layout.tsx         # Layout raiz
 ├── components/            # Componentes React
 ├── lib/                   # Utilitários e configurações
