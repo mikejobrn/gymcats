@@ -30,7 +30,7 @@
 - [ ] Tela de Histórico
 - [ ] Tela de Regras (resumo do desafio)
 - [ ] Avatar/mascote da gata
-- [ ] Ícones e estilo visual
+- [x] Ícones e estilo visual
 
 ## 📱 PWA
 - [ ] Configurar manifest e icons
@@ -38,12 +38,12 @@
 - [ ] Offline support
 
 ## 🚀 Deploy
-- [ ] Deploy automático via Vercel
-- [ ] Variáveis de ambiente (.env) seguras
+- [x] Deploy automático via Vercel
+- [x] Variáveis de ambiente (.env) seguras
 
 ## ✅ Extras
 - [ ] Tema claro/escuro
-- [ ] Ranking de usuários (pontos totais)
+- [x] Ranking de usuários (pontos totais)
 - [ ] Notificações (via browser ou email)
 
 ## 📦 Bibliotecas
