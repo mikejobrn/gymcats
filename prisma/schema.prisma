@@ -92,7 +92,8 @@ model DailyScore {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  date      DateTime @unique @default(now())
+  // Store date only (UTC midnight) — uniqueness should be per-user+date (compound unique below)
+  date      DateTime @default(now())
   score     Int      @default(0)
   
   waterCompleted      Boolean @default(false)

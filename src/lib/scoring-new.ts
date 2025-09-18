@@ -144,30 +144,46 @@ export async function addActivity(
   const dateForScore = formatDateForDB(now)
   console.log('Data para o score:', dateForScore)
   
-  const upsertedScore = await prisma.dailyScore.upsert({
+  // Defensive upsert: findUnique then update or create to avoid P2025 when
+  // a related record is missing or when the compound unique key behaves
+  // unexpectedly in our runtime environment.
+  console.log('Tentando localizar DailyScore existente para:', { userId, dateForScore })
+  const existingScore = await prisma.dailyScore.findUnique({
     where: {
       userId_date: {
         userId,
         date: dateForScore
       }
-    },
-    update: {
-      score: dailyScore.score,
-      waterCompleted: dailyScore.waterCompleted,
-      resistanceCompleted: dailyScore.resistanceCompleted,
-      cardioCompleted: dailyScore.cardioCompleted
-    },
-    create: {
-      userId,
-      date: dateForScore,
-      score: dailyScore.score,
-      waterCompleted: dailyScore.waterCompleted,
-      resistanceCompleted: dailyScore.resistanceCompleted,
-      cardioCompleted: dailyScore.cardioCompleted
     }
   })
 
-  console.log('Score upserted:', upsertedScore)
+  let upsertedScore
+  if (existingScore) {
+    console.log('DailyScore existente encontrado, atualizando...', existingScore.id)
+    upsertedScore = await prisma.dailyScore.update({
+      where: { id: existingScore.id },
+      data: {
+        score: dailyScore.score,
+        waterCompleted: dailyScore.waterCompleted,
+        resistanceCompleted: dailyScore.resistanceCompleted,
+        cardioCompleted: dailyScore.cardioCompleted
+      }
+    })
+  } else {
+    console.log('Nenhum DailyScore encontrado, criando um novo registro')
+    upsertedScore = await prisma.dailyScore.create({
+      data: {
+        userId,
+        date: dateForScore,
+        score: dailyScore.score,
+        waterCompleted: dailyScore.waterCompleted,
+        resistanceCompleted: dailyScore.resistanceCompleted,
+        cardioCompleted: dailyScore.cardioCompleted
+      }
+    })
+  }
+
+  console.log('Score atualizado/criado:', upsertedScore)
 
   // Update user's total score
   const totalScore = await prisma.dailyScore.aggregate({
