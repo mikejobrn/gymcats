@@ -63,8 +63,8 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
               p-4 md:p-6 rounded-xl border-2 transition-all duration-200 
               flex flex-row items-center gap-3 text-center
               ${activity.completed 
-                ? 'border-green-600 bg-white shadow-md' 
-                : 'border-gray-medium bg-white hover:border-pink-medium hover:bg-pink-50 hover:shadow-md'
+                ? 'border-green-600 bg-white shadow-lg' 
+                : 'border-gray-medium bg-white hover:border-pink-medium hover:bg-pink-50 shadow-lg'
               }
               ${isLoading === activity.type ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
             `}
@@ -76,9 +76,6 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
             </div>
             <div className={`font-semibold text-lg ${activity.completed ? 'text-green-600' : 'text-gray-dark'}`}>
               {activity.label}
-            </div>
-            <div className={`text-sm ${activity.completed ? 'text-pink-burnt' : 'text-gray-medium'}`}>
-              {isLoading === activity.type ? 'Processando...' : ''}
             </div>
             {activity.completed && (
               <div className="font-semibold text-lg text-green-600 ml-auto">

@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { SimpleActivityButtons } from '@/components/simple-activity-buttons'
 import { ScoreDisplay } from '@/components/score-display'
-import { ActivityCalendar } from '@/components/activity-calendar'
+import { SimpleActivityButtons } from '@/components/simple-activity-buttons'
+import { useState } from 'react'
 
-import { User, DailyScore, ActivityLog } from '@prisma/client'
+import { ActivityLog, DailyScore, User } from '@prisma/client'
 
 interface UserWithRelations extends User {
   dailyScores: DailyScore[]
@@ -28,6 +27,10 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
   const [localTodayActivities, setLocalTodayActivities] = useState<ActivityLog[]>(todayActivities)
 
   const handleActivityToggle = async (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => {
+    console.log('=== INICIO handleActivityToggle ===')
+    console.log('Type:', type)
+    console.log('Estado atual completedActivities:', completedActivities)
+    
     try {
       const response = await fetch('/api/activities', {
         method: 'POST',
@@ -37,33 +40,51 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
         body: JSON.stringify({ type }),
       })
 
+      console.log('POST response status:', response.status)
+
       if (response.ok) {
-        // Buscar dados atualizados do usuário e score do dia
-        const userScoreRes = await fetch('/api/activities')
-        if (userScoreRes.ok) {
-          const { todayScore, totalScore, streakDays } = await userScoreRes.json()
-          setCurrentScore(todayScore?.score ?? 0)
-          setCompletedActivities({
-            water: todayScore?.waterCompleted ?? false,
-            resistance: todayScore?.resistanceCompleted ?? false,
-            cardio: todayScore?.cardioCompleted ?? false
-          })
-          user.totalScore = totalScore
-          user.streakDays = streakDays
+        const postResult = await response.json()
+        console.log('POST result completo:', postResult)
+        
+        // Usar o estado atualizado diretamente da resposta do POST
+        if (postResult.updatedScore) {
+          const newCompletedActivities = {
+            water: postResult.updatedScore.waterCompleted ?? false,
+            resistance: postResult.updatedScore.resistanceCompleted ?? false,
+            cardio: postResult.updatedScore.cardioCompleted ?? false
+          }
+          console.log('Estado atualizado diretamente da resposta POST:', newCompletedActivities)
+          setCompletedActivities(newCompletedActivities)
+          setCurrentScore(postResult.updatedScore.score ?? 0)
         }
-        // Buscar atividades do dia do backend
+        
+        // Buscar atividades do dia do backend para atualizar a lista
         const today = new Date()
-        const activitiesRes = await fetch(`/api/activities/logs?date=${today.toISOString().split('T')[0]}`)
+        const todayBrazil = new Date(today.getTime() - 3 * 60 * 60 * 1000)
+        const dateStr = todayBrazil.toISOString().split('T')[0]
+        console.log('Buscando atividades para data:', dateStr)
+        
+        const activitiesRes = await fetch(`/api/activities/logs?date=${dateStr}&t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        })
         if (activitiesRes.ok) {
           const { activities } = await activitiesRes.json()
+          console.log('Atividades retornadas:', activities)
           setLocalTodayActivities(activities)
         }
       } else {
-        console.error('Erro ao registrar atividade');
+        console.error('Erro ao registrar atividade - status:', response.status);
+        const errorText = await response.text()
+        console.error('Erro details:', errorText)
       }
     } catch (error) {
       console.error('Erro ao registrar atividade:', error);
     }
+    
+    console.log('=== FIM handleActivityToggle ===')
   };
 
   return (
