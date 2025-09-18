@@ -19,14 +19,13 @@ interface DashboardClientProps {
 }
 
 export function DashboardClient({ user, todayScore, todayActivities }: DashboardClientProps) {
-  const [currentScore, setCurrentScore] = useState(todayScore?.score || 0)
+  const [currentScore, setCurrentScore] = useState(todayScore?.score ?? 0)
   const [completedActivities, setCompletedActivities] = useState({
-    water: todayScore?.waterCompleted || false,
-    resistance: todayScore?.resistanceCompleted || false,
-    cardio: todayScore?.cardioCompleted || false
+    water: todayScore?.waterCompleted ?? false,
+    resistance: todayScore?.resistanceCompleted ?? false,
+    cardio: todayScore?.cardioCompleted ?? false
   })
   const [localTodayActivities, setLocalTodayActivities] = useState<ActivityLog[]>(todayActivities)
-  const [calendarRefreshKey, setCalendarRefreshKey] = useState(0)
 
   const handleActivityToggle = async (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => {
     try {
@@ -43,25 +42,22 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
         const userScoreRes = await fetch('/api/activities')
         if (userScoreRes.ok) {
           const { todayScore, totalScore, streakDays } = await userScoreRes.json()
-          setCurrentScore(todayScore?.score || 0)
+          setCurrentScore(todayScore?.score ?? 0)
           setCompletedActivities({
-            water: todayScore?.waterCompleted || false,
-            resistance: todayScore?.resistanceCompleted || false,
-            cardio: todayScore?.cardioCompleted || false
+            water: todayScore?.waterCompleted ?? false,
+            resistance: todayScore?.resistanceCompleted ?? false,
+            cardio: todayScore?.cardioCompleted ?? false
           })
           user.totalScore = totalScore
           user.streakDays = streakDays
         }
         // Buscar atividades do dia do backend
         const today = new Date()
-        today.setHours(0, 0, 0, 0)
         const activitiesRes = await fetch(`/api/activities/logs?date=${today.toISOString().split('T')[0]}`)
         if (activitiesRes.ok) {
           const { activities } = await activitiesRes.json()
           setLocalTodayActivities(activities)
         }
-        // Forçar recarregamento do calendário
-        setCalendarRefreshKey((k) => k + 1)
       } else {
         console.error('Erro ao registrar atividade');
       }
@@ -87,8 +83,6 @@ export function DashboardClient({ user, todayScore, todayActivities }: Dashboard
             return acc;
           }, {} as Record<'WATER'|'RESISTANCE'|'CARDIO', string | Date | undefined>)}
         />
-
-        {/* Calendário de Atividades movido para página própria */}
       </main>
     </div>
   )

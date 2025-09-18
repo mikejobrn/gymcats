@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Droplets, Dumbbell, Heart } from 'lucide-react'
+import { format, addHours } from 'date-fns'
 
 interface SimpleActivityButtonsProps {
   onActivityToggle: (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => void
@@ -22,21 +23,18 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
       label: 'Água',
       icon: Droplets,
       completed: completedActivities.water,
-      description: 'Marcar como bebida'
     },
     {
       type: 'RESISTANCE' as const, 
       label: 'Resistência',
       icon: Dumbbell,
       completed: completedActivities.resistance,
-      description: 'Marcar treino feito'
     },
     {
       type: 'CARDIO' as const,
       label: 'Cardio', 
       icon: Heart,
       completed: completedActivities.cardio,
-      description: 'Marcar atividade feita'
     }
   ]
 
@@ -63,41 +61,42 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
             disabled={isLoading === activity.type}
             className={`
               p-4 md:p-6 rounded-xl border-2 transition-all duration-200 
-              flex flex-col items-center gap-3 text-center
+              flex flex-row items-center gap-3 text-center
               ${activity.completed 
-                ? 'border-pink-burnt bg-pink-pastel shadow-md' 
+                ? 'border-green-600 bg-white shadow-md' 
                 : 'border-gray-medium bg-white hover:border-pink-medium hover:bg-pink-50 hover:shadow-md'
               }
               ${isLoading === activity.type ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
             `}
           >
             <div className="mb-2">
-              {React.createElement(activity.icon, { className: "w-8 h-8 md:w-10 md:h-10 mx-auto" })}
+              {React.createElement(activity.icon, { 
+                className: `w-8 h-8 md:w-10 md:h-10 mx-auto ${activity.completed ? 'text-green-600' : ''}` 
+              })}
             </div>
-            <div className="font-semibold text-lg text-gray-dark">{activity.label}</div>
+            <div className={`font-semibold text-lg ${activity.completed ? 'text-green-600' : 'text-gray-dark'}`}>
+              {activity.label}
+            </div>
             <div className={`text-sm ${activity.completed ? 'text-pink-burnt' : 'text-gray-medium'}`}>
-              {isLoading === activity.type ? 'Processando...' : activity.description}
+              {isLoading === activity.type ? 'Processando...' : ''}
             </div>
             {activity.completed && (
-              <div className="text-xs font-bold text-pink-burnt bg-white/80 px-3 py-1 rounded-full">
-                ✅ FEITO HOJE
+              <div className="font-semibold text-lg text-green-600 ml-auto">
                 {activityTimes && activityTimes[activity.type] && (
-                  <span className="block mt-1">
-                    {typeof activityTimes[activity.type] === 'string'
-                      ? new Date(activityTimes[activity.type]!).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-                      : (activityTimes[activity.type] as Date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
+                  format(
+                    addHours(
+                      typeof activityTimes[activity.type] === 'string'
+                        ? new Date(activityTimes[activity.type]!)
+                        : activityTimes[activity.type] as Date,
+                      3
+                    ),
+                    'HH:mm'
+                  )
                 )}
               </div>
             )}
           </button>
         ))}
-      </div>
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-medium">
-          Clique nos botões acima para marcar suas atividades como concluídas hoje
-        </p>
       </div>
     </div>
   )

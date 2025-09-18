@@ -1,9 +1,9 @@
-import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
+import { DashboardClient } from '@/components/dashboard-client'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { DashboardClient } from '@/components/dashboard-client'
-import { getBrazilDate, getStartOfDay, getEndOfDay } from '@/lib/date-utils'
+import { endOfDay, isSameDay, startOfDay } from 'date-fns'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
@@ -12,13 +12,19 @@ export default async function Dashboard() {
     redirect('/auth/signin')
   }
 
-  // Get user data using Brazil timezone
-  const now = getBrazilDate()
-  const startOfToday = getStartOfDay(now)
-  const endOfToday = getEndOfDay(now)
+  // Adjust for Brazil timezone (UTC-3)
+  const nowUTC = new Date()
+  const nowBrazil = new Date(nowUTC.getTime() - 3 * 60 * 60 * 1000) // Subtract 3 hours
+  const startOfToday = startOfDay(nowBrazil)
+  const endOfToday = endOfDay(nowBrazil)
+
+  console.log('Current time UTC:', nowUTC)
+  console.log('Current time Brazil:', nowBrazil)
+  console.log('Start of today Brazil:', startOfToday)
+  console.log('End of today Brazil:', endOfToday)
 
   const user = await prisma.user.findUnique({
-    where: { email: session.user?.email || '' },
+    where: { email: session.user?.email ?? '' },
     include: {
       dailyScores: {
         orderBy: { date: 'desc' },
@@ -36,16 +42,19 @@ export default async function Dashboard() {
     }
   })
 
+  console.log('User fetched for dashboard:', user)
+
   if (!user) {
     redirect('/auth/signin')
   }
 
-  // Find today's score using Brazil date
-  const todayBrazil = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  // Find today's score - compare with Brazil date
   const todayScore = user.dailyScores.find(score => {
-    const scoreDate = new Date(score.date.getFullYear(), score.date.getMonth(), score.date.getDate())
-    return scoreDate.getTime() === todayBrazil.getTime()
+    console.log('Checking score date (Brazil):', score.date, 'against today (Brazil):', nowBrazil)
+    return isSameDay(score.date, nowBrazil);
   })
+
+  console.log('Today\'s score:', todayScore)
 
   return (
     <DashboardClient 
