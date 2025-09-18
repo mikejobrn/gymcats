@@ -49,11 +49,11 @@ export default function PodioPage() {
   const getMedalIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="w-6 h-6 text-yellow-500" />
+        return <Crown className="w-6 h-6 text-yellow-700" />
       case 2:
-        return <Medal className="w-6 h-6 text-gray-400" />
+        return <Medal className="w-6 h-6 text-gray-600" />
       case 3:
-        return <Award className="w-6 h-6 text-amber-600" />
+        return <Award className="w-6 h-6 text-amber-700" />
       default:
         return <span className="text-lg font-bold text-gray-600">#{rank}</span>
     }
@@ -144,17 +144,17 @@ export default function PodioPage() {
                   <div className="mb-1">
                     <Medal className="w-8 h-8 mx-auto text-gray-300" />
                   </div>
-                  <div className="text-sm font-bold text-white">2º</div>
+                  <div className="text-lg font-bold text-white">2º</div>
                 </div>
-                <div className="mt-2 text-center">
-                  <div className="font-semibold text-sm truncate w-24">
+                <div className="mt-2 text-right">
+                  <div className="font-semibold text-sm truncate w-20">
                     {topThree[1].name || 'Gatinha Anônima'}
                   </div>
-                  <div className="text-blue-600 font-bold">
+                  <div className="text-gray-400 font-bold text-sm">
                     {topThree[1].totalScore}pts
                   </div>
-                  <div className="text-orange-500 text-xs">
-                  <Flame className="w-4 h-4 text-orange-500" />
+                  <div className="text-pink-500 text-sm flex items-center justify-end gap-1">
+                  <Flame className="w-4 h-4 text-pink-500" />
                   {" "}{topThree[1].streakDays} dias
                   </div>
                 </div>
@@ -170,14 +170,14 @@ export default function PodioPage() {
                 <div className="text-lg font-bold text-white">1º</div>
               </div>
               <div className="mt-2 text-center">
-                <div className="font-bold text-base truncate w-28">
+                <div className="font-bold text-sm truncate w-20">
                   {topThree[0].name || 'Gatinha Anônima'}
                 </div>
-                <div className="text-blue-600 font-bold text-lg">
+                <div className="text-yellow-600 font-bold text-sm">
                   {topThree[0].totalScore}pts
                 </div>
-                <div className="text-orange-500 text-sm">
-                <Flame className="w-4 h-4 text-orange-500" />
+                <div className="text-pink-500 text-sm flex items-center justify-center gap-1">
+                <Flame className="w-4 h-4 text-pink-500" />
                 {" "}{topThree[0].streakDays} dias
                 </div>
               </div>
@@ -190,17 +190,17 @@ export default function PodioPage() {
                   <div className="mb-1">
                     <Award className="w-8 h-8 mx-auto text-amber-700" />
                   </div>
-                  <div className="text-sm font-bold text-white">3º</div>
+                  <div className="text-lg font-bold text-white">3º</div>
                 </div>
-                <div className="mt-2 text-center">
-                  <div className="font-semibold text-sm truncate w-24">
+                <div className="mt-2 text-left">
+                  <div className="font-semibold text-sm truncate w-20">
                     {topThree[2].name || 'Gatinha Anônima'}
                   </div>
-                  <div className="text-blue-600 font-bold">
+                  <div className="text-orange-600 font-bold text-sm">
                     {topThree[2].totalScore}pts
                   </div>
-                  <div className="text-orange-500 text-xs">
-                  <Flame className="w-4 h-4 text-orange-500" />
+                  <div className="text-pink-500 text-sm flex items-center justify-start gap-1">
+                  <Flame className="w-4 h-4 text-pink-500" />
                   {" "}{topThree[2].streakDays} dias
                   </div>
                 </div>
@@ -245,18 +245,18 @@ export default function PodioPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-pink-burnt">
                   Membro desde {new Date(user.createdAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-lg font-bold text-blue-600">
+              <div className="text-lg font-bold text-pink-burnt">
                 {user.totalScore} pts
               </div>
-              <div className="text-sm text-orange-500 flex items-center justify-end space-x-1">
-                <Flame className="w-4 h-4 text-orange-500" />
+              <div className="text-sm text-pink-burnt flex items-center justify-end space-x-1">
+                <Flame className="w-4 h-4 text-pink-burnt" />
                 <span>{user.streakDays} dias</span>
               </div>
             </div>
