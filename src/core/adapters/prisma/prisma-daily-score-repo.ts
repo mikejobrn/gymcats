@@ -1,7 +1,8 @@
 import { prisma } from '../../../lib/prisma'
 import type { Activity } from '../../entities/activity'
+import type { ScoreRepository } from '../../ports/score-repository'
 
-export class PrismaDailyScoreRepository {
+export class PrismaDailyScoreRepository implements ScoreRepository {
   async findByUserAndDate(userId: string, dateISO: string) {
     const dt = new Date(dateISO + 'T00:00:00Z')
     return prisma.dailyScore.findUnique({ where: { userId_date: { userId, date: dt } } })
@@ -45,5 +46,12 @@ export class PrismaDailyScoreRepository {
     })
 
     return result
+  }
+
+  async listByUserAndRange(userId: string, startISO: string, endISO: string) {
+    const start = new Date(startISO + 'T00:00:00Z')
+    const end = new Date(endISO + 'T23:59:59Z')
+    const rows = await prisma.dailyScore.findMany({ where: { userId, date: { gte: start, lte: end } }, orderBy: { date: 'asc' } })
+    return rows
   }
 }

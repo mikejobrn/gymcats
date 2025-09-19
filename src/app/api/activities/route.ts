@@ -7,6 +7,7 @@ import { PrismaDailyScoreRepository } from '@/core/adapters/prisma/prisma-daily-
 import { PrismaBonusRepository } from '@/core/adapters/prisma/prisma-bonus-repo'
 import { SystemClock } from '@/core/adapters/clock/system-clock'
 import { AddActivityUseCase } from '@/core/usecases/add-activity'
+import { createDailyScoreRepository, createClock, createActivityRepository, createScoreRules, createBonusRepository } from '@/app/providers'
 // ...existing code...
 
 export async function GET() {
@@ -27,8 +28,8 @@ export async function GET() {
     console.log('User ID:', user.id)
     
     // Use Clean Architecture: use-cases + adapters
-    const dailyScoreRepo = new PrismaDailyScoreRepository()
-    const clock = new SystemClock()
+  const dailyScoreRepo = createDailyScoreRepository()
+  const clock = createClock()
 
     const dateForScore = clock.isoDate()
     const todayScore = await dailyScoreRepo.findByUserAndDate(user.id, dateForScore)
@@ -69,10 +70,10 @@ export async function POST(request: NextRequest) {
     }
 
   // Use Clean Architecture use-cases/adapters to add activity and recalc score
-  const activityRepo = new PrismaActivityRepository()
-  const clock = new SystemClock()
-  const dailyRepo = new (await import('@/core/adapters/prisma/prisma-daily-score-repo')).PrismaDailyScoreRepository()
-  const scoreRules = { water: 2, resistance: 3, cardio: 2, dailyMax: 7 }
+  const activityRepo = createActivityRepository()
+  const clock = createClock()
+  const dailyRepo = createDailyScoreRepository()
+  const scoreRules = createScoreRules()
 
     const typeMap: Record<string, 'water'|'resistance'|'cardio'> = {
       WATER: 'water',
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
     }
     const mappedType = typeMap[type]
 
-  const bonusRepo = new PrismaBonusRepository()
+  const bonusRepo = createBonusRepository()
   const addUseCase = new AddActivityUseCase(activityRepo, clock, dailyRepo, scoreRules, bonusRepo)
     const activity = await addUseCase.execute({ userId: user.id, type: mappedType })
 

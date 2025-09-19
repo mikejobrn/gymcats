@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { createUserRepository, createActivityRepository } from '@/app/providers'
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,9 +15,8 @@ export async function GET(request: NextRequest) {
     if (!dateStr) {
       return NextResponse.json({ error: 'Missing date' }, { status: 400 })
     }
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    })
+  const userRepo = createUserRepository()
+  const user = await userRepo.findByEmail(session.user.email as string)
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
@@ -25,16 +25,8 @@ export async function GET(request: NextRequest) {
     start.setHours(0, 0, 0, 0)
     const end = new Date(start)
     end.setHours(23, 59, 59, 999)
-    const activities = await prisma.activityLog.findMany({
-      where: {
-        userId: user.id,
-        date: {
-          gte: start,
-          lte: end,
-        },
-      },
-      orderBy: { date: 'asc' },
-    })
+  const activityRepo = createActivityRepository()
+  const activities = await activityRepo.listByUserAndRange(user.id, start.toISOString().slice(0,10), end.toISOString().slice(0,10))
     return NextResponse.json({ activities })
   } catch (error) {
     console.error('Error fetching activities:', error)

@@ -1,6 +1,7 @@
 import { PainelClient } from '@/components/painel-client'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { createUserRepository } from '@/app/providers'
 import { endOfDay, isSameDay, startOfDay } from 'date-fns'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
@@ -21,24 +22,8 @@ export default async function Painel() {
 
   // Debug logs removed
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user?.email ?? '' },
-    include: {
-      dailyScores: {
-        orderBy: { date: 'desc' },
-        take: 7
-      },
-      activityLogs: {
-        where: {
-          date: {
-            gte: startOfToday,
-            lte: endOfToday
-          }
-        },
-        orderBy: { date: 'desc' }
-      }
-    }
-  })
+  const userRepo = createUserRepository()
+  const user = await userRepo.findByEmailWithRelations(session.user?.email ?? '')
 
   // Debug logs removed
 
