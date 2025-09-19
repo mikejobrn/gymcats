@@ -1,9 +1,8 @@
-import { prisma } from '@/lib/prisma'
-import { getBrazilDate, getStartOfDay, getEndOfDay, formatDateForDB } from '@/lib/date-utils'
 import { createActivityRepository, createDailyScoreRepository, createClock, createScoreRules, createUserRepository } from '@/app/providers'
 import { CalculateDailyScoreUseCase } from '@/core/usecases/calculate-daily-score'
 import { AddActivityUseCase } from '@/core/usecases/add-activity'
 import { GetRankingUseCase } from '@/core/usecases/get-ranking'
+import { ActivityType } from '@/core/entities/activity'
 
 export const SCORE_RULES = {
   water: {
@@ -49,8 +48,8 @@ export async function addActivity(userId: string, type: 'WATER' | 'RESISTANCE' |
   const clock = createClock()
   const scoreRules = createScoreRules()
 
-  const addUseCase = new AddActivityUseCase(activityRepo, clock, dailyRepo as any, scoreRules)
-  const activity = await addUseCase.execute({ userId, type: type.toLowerCase() as any })
+  const addUseCase = new AddActivityUseCase(activityRepo, clock, dailyRepo, scoreRules)
+  const activity = await addUseCase.execute({ userId, type: type.toLowerCase() as ActivityType })
 
   return activity
 }

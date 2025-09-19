@@ -18,7 +18,7 @@ interface PainelClientProps {
   initialActivityTimes?: Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined>
 }
 
-export function PainelClient({ user, todayScore, todayActivities }: PainelClientProps) {
+export function PainelClient({ user, todayScore, todayActivities, initialActivityTimes }: PainelClientProps) {
   const [currentScore, setCurrentScore] = useState(todayScore?.score ?? 0)
   const [completedActivities, setCompletedActivities] = useState({
     water: todayScore?.waterCompleted ?? false,
@@ -26,7 +26,6 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
     cardio: todayScore?.cardioCompleted ?? false
   })
   const [localTodayActivities, setLocalTodayActivities] = useState<ActivityLog[]>(todayActivities)
-  const [initialActivityTimes] = useState<Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined>>(arguments[0]?.initialActivityTimes ?? { WATER: undefined, RESISTANCE: undefined, CARDIO: undefined })
 
   const handleActivityToggle = async (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => {
     

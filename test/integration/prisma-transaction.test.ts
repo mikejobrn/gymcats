@@ -14,7 +14,7 @@ test('prisma transactional flow succeeds', async () => {
     await prisma.$disconnect()
     expect(true).toBe(true)
   } catch (err) {
-    try { await prisma.$disconnect() } catch (_) {}
+    try { await prisma.$disconnect() } catch {}
     throw err
   }
 })

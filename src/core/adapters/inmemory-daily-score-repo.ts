@@ -1,12 +1,16 @@
 import type { Activity } from '../entities/activity'
+import { v4 as uuid } from 'uuid'
 
 type DailyScoreRow = {
+  id: string
   userId: string
   date: string
   score: number
   waterCompleted: boolean
   resistanceCompleted: boolean
   cardioCompleted: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export class InMemoryDailyScoreRepository {
@@ -26,12 +30,27 @@ export class InMemoryDailyScoreRepository {
     const newResistance = activityType === 'resistance' ? true : existingResistance
     const newCardio = activityType === 'cardio' ? true : existingCardio
 
-    const row = { userId, date: dateISO, score, waterCompleted: newWater, resistanceCompleted: newResistance, cardioCompleted: newCardio }
+    const now = new Date()
+    const row: DailyScoreRow = { 
+      id: existing?.id ?? uuid(), 
+      userId, 
+      date: dateISO, 
+      score, 
+      waterCompleted: newWater, 
+      resistanceCompleted: newResistance, 
+      cardioCompleted: newCardio,
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now
+    }
     if (existing) {
       Object.assign(existing, row)
       return existing
     }
     this.rows.push(row)
     return row
+  }
+
+  async listByUserAndRange(userId: string, startISO: string, endISO: string) {
+    return this.rows.filter(r => r.userId === userId && r.date >= startISO && r.date <= endISO)
   }
 }

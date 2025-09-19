@@ -4,5 +4,5 @@ export type UserCreateInput = {
   hashedPassword?: string
   totalScore?: number
   streakDays?: number
-  [key: string]: any
+  [key: string]: unknown
 }

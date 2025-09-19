@@ -9,12 +9,12 @@ export class PrismaUserRepository implements UserRepository {
   async findById(id: string) {
     return prisma.user.findUnique({ where: { id } })
   }
-  async update(id: string, data: Record<string, any>) {
+  async update(id: string, data: Record<string, unknown>) {
     return prisma.user.update({ where: { id }, data })
   }
 
   async create(data: UserCreateInput) {
-    return prisma.user.create({ data: data as any })
+    return prisma.user.create({ data: data as UserCreateInput })
   }
 
   // convenience: fetch user with related dailyScores and activityLogs

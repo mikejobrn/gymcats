@@ -11,7 +11,7 @@ describe('DailyScore upsert merging flags', () => {
     const clock = new FixedClock('2025-09-18T10:00:00Z')
     const rules = { water: 2, resistance: 3, cardio: 2, dailyMax: 7 }
 
-    const addUseCase = new AddActivityUseCase(activityRepo, clock, dailyRepo as any, rules)
+    const addUseCase = new AddActivityUseCase(activityRepo, clock, dailyRepo, rules)
 
     // add resistance first
     await addUseCase.execute({ userId: 'u1', type: 'resistance' })

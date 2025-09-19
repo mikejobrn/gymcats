@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { PrismaClient } = require('@prisma/client')
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
@@ -17,7 +17,7 @@ async function main() {
     process.exit(0)
   } catch (err) {
     console.error('Prisma transaction script failed', err)
-    try { await prisma.$disconnect() } catch(e) {}
+    try { await prisma.$disconnect() } catch {}
     process.exit(1)
   }
 }

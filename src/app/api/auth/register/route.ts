@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
         { message: 'Usuário criado com sucesso', userId: user.id },
         { status: 201 }
       )
-    } catch (err: any) {
-      if (err?.message === 'USER_EXISTS') {
+    } catch (err: unknown) {
+      if (err instanceof Error && err?.message === 'USER_EXISTS') {
         return NextResponse.json(
           { error: 'Usuário já existe com este email' },
           { status: 400 }

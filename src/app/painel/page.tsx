@@ -1,11 +1,9 @@
 import { PainelClient } from '@/components/painel-client'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 import { createUserRepository } from '@/app/providers'
-import { endOfDay, isSameDay, startOfDay } from 'date-fns'
+import { isSameDay, format, addHours } from 'date-fns'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import { format, addHours } from 'date-fns'
 
 export default async function Painel() {
   const session = await getServerSession(authOptions)
@@ -17,8 +15,6 @@ export default async function Painel() {
   // Adjust for Brazil timezone (UTC-3)
   const nowUTC = new Date()
   const nowBrazil = new Date(nowUTC.getTime() - 3 * 60 * 60 * 1000) // Subtract 3 hours
-  const startOfToday = startOfDay(nowBrazil)
-  const endOfToday = endOfDay(nowBrazil)
 
   // Debug logs removed
 

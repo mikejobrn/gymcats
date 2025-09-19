@@ -2,7 +2,7 @@ import { Activity, ActivityType } from "../entities/activity"
 import { ActivityRepository } from "../ports/activity-repository"
 import { v4 as uuid } from 'uuid'
 import type { Clock } from "../ports/clock"
-import type { PrismaDailyScoreRepository } from "../adapters/prisma/prisma-daily-score-repo"
+import type { ScoreRepository } from "../ports/score-repository"
 import { CalculateDailyScoreUseCase } from "./calculate-daily-score"
 import { ApplyConsistencyBonusesUseCase } from "./consistency-bonus"
 import type { PrismaBonusRepository } from "../adapters/prisma/prisma-bonus-repo"
@@ -21,7 +21,7 @@ export type AddActivityInput = {
 }
 
 export class AddActivityUseCase {
-  constructor(private activityRepo: ActivityRepository, private clock: Clock, private dailyRepo?: PrismaDailyScoreRepository, private rules?: ScoreRules, private bonusRepo?: PrismaBonusRepository) {}
+  constructor(private activityRepo: ActivityRepository, private clock: Clock, private dailyRepo?: ScoreRepository, private rules?: ScoreRules, private bonusRepo?: PrismaBonusRepository) {}
 
   async execute(input: AddActivityInput): Promise<Activity> {
     const when = input.when ? this.clock.startOfDay(input.when) : this.clock.startOfDay()

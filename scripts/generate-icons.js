@@ -2,8 +2,8 @@
 // Generates PNG icons from public/next.svg using sharp.
 // Usage: node scripts/generate-icons.js
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const sizes = [192, 256, 384, 512];
 const svgPath = path.join(__dirname, '..', 'public', 'next.svg');
@@ -17,8 +17,8 @@ if (!fs.existsSync(svgPath)) {
 async function run() {
   let sharp;
   try {
-    sharp = require('sharp');
-  } catch (e) {
+    sharp = (await import('sharp')).default;
+  } catch {
     console.error('sharp is not installed. Run: npm install sharp --save-dev');
     process.exit(1);
   }
