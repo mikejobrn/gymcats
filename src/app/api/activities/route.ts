@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { addActivity } from '@/lib/scoring-new'
 import { z } from 'zod'
+import { PrismaActivityRepository } from '@/core/adapters/prisma/prisma-activity-repo'
+import { PrismaDailyScoreRepository } from '@/core/adapters/prisma/prisma-daily-score-repo'
+import { PrismaBonusRepository } from '@/core/adapters/prisma/prisma-bonus-repo'
+import { SystemClock } from '@/core/adapters/clock/system-clock'
+import { AddActivityUseCase } from '@/core/usecases/add-activity'
+// ...existing code...
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('=== GET /api/activities chamado ===')
     const session = await getServerSession(authOptions)
@@ -14,37 +19,23 @@ export async function GET(request: NextRequest) {
     
     console.log('User email:', session.user.email)
     const { prisma } = await import('@/lib/prisma')
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    })
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } })
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
     
     console.log('User ID:', user.id)
     
-    // Score do dia (DailyScore) - usar mesma lógica do addActivity
-    const { getBrazilDate, formatDateForDB } = await import('@/lib/date-utils')
-    const now = getBrazilDate()
-    const dateForScore = formatDateForDB(now)
-    console.log('Data para buscar score (corrigida):', dateForScore)
-    
-    const todayScore = await prisma.dailyScore.findUnique({
-      where: {
-        userId_date: {
-          userId: user.id,
-          date: dateForScore,
-        },
-      },
-    })
+    // Use Clean Architecture: use-cases + adapters
+    const dailyScoreRepo = new PrismaDailyScoreRepository()
+    const clock = new SystemClock()
+
+    const dateForScore = clock.isoDate()
+    const todayScore = await dailyScoreRepo.findByUserAndDate(user.id, dateForScore)
     
     console.log('TodayScore encontrado:', todayScore)
     
-    const response = {
-      todayScore,
-      totalScore: user.totalScore,
-      streakDays: user.streakDays,
-    }
+    const response = { todayScore, totalScore: user.totalScore, streakDays: user.streakDays }
     
     console.log('Resposta final GET:', response)
     return NextResponse.json(response)
@@ -66,46 +57,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { type } = activitySchema.parse(body)
+  const body = await request.json()
+  const { type } = activitySchema.parse(body)
 
     // Find user by email
     const { prisma } = await import('@/lib/prisma')
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
-    })
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Add/toggle activity
-    const activity = await addActivity(user.id, type)
+  // Use Clean Architecture use-cases/adapters to add activity and recalc score
+  const activityRepo = new PrismaActivityRepository()
+  const clock = new SystemClock()
+  const dailyRepo = new (await import('@/core/adapters/prisma/prisma-daily-score-repo')).PrismaDailyScoreRepository()
+  const scoreRules = { water: 2, resistance: 3, cardio: 2, dailyMax: 7 }
 
-    // Buscar o estado atualizado imediatamente após a operação
-    const { getBrazilDate, formatDateForDB } = await import('@/lib/date-utils')
-    const now = getBrazilDate()
-    const dateForScore = formatDateForDB(now)
-    
-    const updatedScore = await prisma.dailyScore.findUnique({
-      where: {
-        userId_date: {
-          userId: user.id,
-          date: dateForScore,
-        },
-      },
-    })
+    const typeMap: Record<string, 'water'|'resistance'|'cardio'> = {
+      WATER: 'water',
+      RESISTANCE: 'resistance',
+      CARDIO: 'cardio'
+    }
+    const mappedType = typeMap[type]
 
-    return NextResponse.json({ 
-      success: true, 
-      activity: {
-        id: activity.id,
-        type: activity.type,
-        completed: activity.completed,
-        date: activity.date
-      },
-      updatedScore: updatedScore
-    })
+  const bonusRepo = new PrismaBonusRepository()
+  const addUseCase = new AddActivityUseCase(activityRepo, clock, dailyRepo, scoreRules, bonusRepo)
+    const activity = await addUseCase.execute({ userId: user.id, type: mappedType })
+
+    const dateForScore = clock.isoDate()
+    const updatedScore = await dailyRepo.findByUserAndDate(user.id, dateForScore)
+
+    return NextResponse.json({ success: true, activity: { id: activity.id, type: activity.type, date: activity.date }, updatedScore })
 
   } catch (error) {
     console.error('Error adding activity:', error)

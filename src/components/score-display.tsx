@@ -1,4 +1,4 @@
-import { Flame } from 'lucide-react'
+// visual icon intentionally omitted to avoid unused import; keep component minimal
 
 interface ScoreDisplayProps {
   currentScore: number

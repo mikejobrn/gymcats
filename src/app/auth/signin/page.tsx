@@ -1,6 +1,6 @@
 'use client'
 
-import { signIn, getSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Globe, Cat, CheckCircle, Key, FileText, UserPlus } from 'lucide-react'
@@ -13,7 +13,8 @@ export default function SignIn() {
     password: '',
     name: ''
   })
-  const [error, setError] = useState('')
+  // form error state
+  const [formError, setFormError] = useState('')
   const router = useRouter()
 
   const handleGoogleSignIn = async () => {
@@ -30,7 +31,7 @@ export default function SignIn() {
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setError('')
+  setFormError('')
 
     try {
       if (isRegister) {
@@ -51,14 +52,14 @@ export default function SignIn() {
             redirect: false,
           })
 
-          if (result?.ok) {
+            if (result?.ok) {
             router.push('/painel')
           } else {
-            setError('Erro ao fazer login após registro')
+            setFormError('Erro ao fazer login após registro')
           }
         } else {
           const data = await response.json()
-          setError(data.error || 'Erro ao criar conta')
+          setFormError(data.error || 'Erro ao criar conta')
         }
       } else {
         // Login
@@ -71,11 +72,12 @@ export default function SignIn() {
         if (result?.ok) {
           router.push('/painel')
         } else {
-          setError('Email ou senha incorretos')
+          setFormError('Email ou senha incorretos')
         }
       }
-    } catch (error) {
-      setError('Erro interno do servidor')
+    } catch (e) {
+      console.error('Signin error:', e)
+      setFormError('Erro interno do servidor')
     } finally {
       setIsLoading(false)
     }
@@ -163,7 +165,7 @@ export default function SignIn() {
               }}
             />
 
-            {error && (
+            {formError && (
               <div 
                 className="text-red-500 text-sm text-center font-semibold p-3 rounded-lg"
                 style={{
@@ -172,7 +174,7 @@ export default function SignIn() {
                   border: '2px solid #DC2626'
                 }}
               >
-                {error}
+                {formError}
               </div>
             )}
 

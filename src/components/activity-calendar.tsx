@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Droplets, Dumbbell, Heart } from 'lucide-react'
 
 interface CalendarProps {
@@ -20,11 +20,7 @@ export function ActivityCalendar({ userId }: CalendarProps) {
   const [monthActivities, setMonthActivities] = useState<DayActivity[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    fetchMonthActivities()
-  }, [currentDate, userId])
-
-  const fetchMonthActivities = async () => {
+  const fetchMonthActivities = useCallback(async () => {
     setIsLoading(true)
     try {
       const year = currentDate.getFullYear()
@@ -40,7 +36,9 @@ export function ActivityCalendar({ userId }: CalendarProps) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [currentDate, userId])
+
+  useEffect(() => { fetchMonthActivities() }, [fetchMonthActivities])
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear()

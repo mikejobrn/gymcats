@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { Droplets, Dumbbell, Heart } from 'lucide-react'
 import { format, addHours } from 'date-fns'
-import bg from 'zod/v4/locales/bg.cjs'
 
 interface SimpleActivityButtonsProps {
   onActivityToggle: (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => void

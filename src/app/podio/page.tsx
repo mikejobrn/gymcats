@@ -124,7 +124,7 @@ export default function PodioPage() {
   }
 
   const topThree = podiumData.ranking.slice(0, 3)
-  const others = podiumData.ranking.slice(3)
+  // 'others' removed - not currently used
 
   return (
     <div className="max-w-2xl mx-auto pt-16 md:pt-6">

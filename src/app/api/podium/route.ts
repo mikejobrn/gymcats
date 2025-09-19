@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions)
     
@@ -43,10 +43,7 @@ export async function GET(request: NextRequest) {
       email: user.email.replace(/(.{2})(.*)(@.*)/, '$1***$3')
     }))
 
-    return NextResponse.json({
-      ranking,
-      currentUser: session.user.email
-    })
+    return NextResponse.json({ ranking, currentUser: session.user.email })
 
   } catch (error) {
     console.error('Error fetching podium ranking:', error)
