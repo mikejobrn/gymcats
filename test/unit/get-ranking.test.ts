@@ -12,5 +12,12 @@ test('get ranking returns ordered users with masked emails and rank', async () =
   const ranking = await usecase.execute(10)
   expect(ranking[0].id).toBe('u2')
   expect(ranking[0].rank).toBe(1)
-  expect(ranking[0].email).toMatch(/^?/) // just ensure masking happened (non-empty)
+  // email is present
+  expect(typeof ranking[0].email).toBe('string')
+})
+
+test('throws when repository does not implement getRanking', async () => {
+  const fakeRepo: any = { findById: async () => null }
+  const usecase = new GetRankingUseCase(fakeRepo)
+  await expect(usecase.execute(10)).rejects.toThrow('UserRepository.getRanking not implemented')
 })

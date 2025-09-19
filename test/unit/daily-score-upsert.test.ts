@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { InMemoryActivityRepository } from '../../src/core/adapters/inmemory-activity-repo'
-import { InMemoryDailyScoreRepository } from '../../src/core/adapters/inmemory-daily-score-repo'
+import { InMemoryActivityRepository } from '../../src/core/adapters/inmemory/inmemory-activity-repo'
+import { InMemoryDailyScoreRepository } from '../../src/core/adapters/inmemory/inmemory-daily-score-repo'
 import { AddActivityUseCase } from '../../src/core/usecases/add-activity'
 import { FixedClock } from '../../src/core/adapters/clock/fixed-clock'
 
