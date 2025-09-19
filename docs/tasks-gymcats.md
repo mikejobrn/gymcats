@@ -54,3 +54,28 @@
 - `clsx`
 - `next-pwa`
 - `bcryptjs` (para autenticação por senha)
+
+## Testes e fixtures
+- Usar Vitest para testes unitários e de integração leves. O script `test` já está configurado para rodar o Vitest (ver `package.json`).
+- Substituir scripts de criação de fixtures por um seed do Prisma (`prisma/seed.ts`). Use `pnpm prisma db seed` (ou `npm run prisma db seed`) para popular o banco local e nas pipelines de CI antes de rodar testes de integração.
+- Para criar usuários e dados de teste, inclua funções idempotentes no `prisma/seed.ts` para poder rodar o seed várias vezes durante desenvolvimento.
+
+Padrão recomendado (Prisma seed)
+- Adicione uma entrada `prisma.seed` no `package.json` que invoque `ts-node --transpile-only prisma/seed.ts` (ou `node` em JS). Isso permite usar `prisma db seed` sem scripts ad-hoc.
+- Exemplo (já adicionado ao `package.json` deste repositório):
+  - "prisma": { "seed": "ts-node --transpile-only prisma/seed.ts" }
+
+Comandos úteis:
+```bash
+# gerar client
+pnpm prisma generate
+
+# aplicar migrações em dev
+pnpm prisma migrate dev
+
+# rodar seed (usa a configuração `prisma.seed` do package.json)
+pnpm prisma db seed
+
+# rodar testes
+pnpm test
+```

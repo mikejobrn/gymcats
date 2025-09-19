@@ -49,6 +49,13 @@ Ferramentas e libs
 - date-fns (já presente) para manipular datas (startOfDay, subDays, isSameDay, differenceInCalendarDays).
 - Vitest para testes unitários (rápido, moderno e compatível com TS).
 
+Substituindo scripts por seeds
+- Repositórios antigos que usam arquivos em `scripts/` para popular fixtures devem migrar para o seed do Prisma. Recomenda-se criar `prisma/seed.ts` com funções que criam os dados de teste (usuários, activities, scores). Assim o fluxo se integra ao `prisma db seed` e pode ser usado em CI.
+- Exemplos de comandos úteis (adicionar no README/dev setup):
+  - Gerar client: `pnpm prisma generate` (ou `npm run prisma generate`)
+  - Aplicar migrações: `pnpm prisma migrate dev` (ou `prisma migrate deploy` em CI)
+  - Rodar seed: `pnpm prisma db seed` (assegure `package.json`/`prisma` config aponte para `prisma/seed.ts`).
+
 Notas finais
 - Ao final, criar adaptadores que implementem os ports usando Prisma (e.g., `src/adapters/prisma/activity-repo.ts`).
 - Migrar handlers API (em `src/app/api/...`) para usar os use-cases via injeção de dependência (simples factory no `src/app/providers.tsx` ou inject manualmente em cada rota).

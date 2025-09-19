@@ -63,3 +63,6 @@ Pessoas que querem criar constância em hábitos saudáveis por meio de um desaf
 - Interface leve e divertida
 - Recompensas por consistência
 - Mascote (gata) como avatar/motivador visual
+
+## Testes e ambientes de desenvolvimento
+- Fixtures e dados de desenvolvimento devem ser providos pelo seed do Prisma (`prisma/seed.ts`) para manter um fluxo reprodutível entre máquinas e CI. Evitar manter scripts ad-hoc fora do fluxo do Prisma.

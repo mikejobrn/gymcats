@@ -54,6 +54,43 @@ Gata estilizada simbolizando força e leveza 🐱
 ### Pré-requisitos
 - Node.js 18+
 - PostgreSQL
+### 🔧 Local setup (migrate + seed + test)
+
+Recomenda-se usar o fluxo Prisma para gerar client, aplicar migrações e popular fixtures com seed.
+
+1. Gere o client do Prisma:
+
+```bash
+pnpm prisma generate
+# ou
+npm run prisma:generate
+```
+
+2. Aplique migrações (desenvolvimento):
+
+```bash
+pnpm prisma migrate dev
+```
+
+3. Rode o seed (usa `prisma.seed` do `package.json`, que aponta para `prisma/seed.ts`):
+
+```bash
+pnpm prisma db seed
+# ou
+npm run seed
+```
+
+4. Rode os testes (Vitest):
+
+```bash
+pnpm test
+# ou
+npm test
+```
+
+Observações:
+- Garanta que a variável de ambiente `DATABASE_URL` esteja configurada no seu `.env` antes de rodar migrações/seed.
+- O seed é idempotente e cria um usuário de teste (`teste@gymcats.app`) e exemplos para popular o pódio.
 
 ### Instalação
 
