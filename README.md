@@ -92,6 +92,19 @@ Observações:
 - Garanta que a variável de ambiente `DATABASE_URL` esteja configurada no seu `.env` antes de rodar migrações/seed.
 - O seed é idempotente e cria um usuário de teste (`teste@gymcats.app`) e exemplos para popular o pódio.
 
+### Seeding & test helpers
+
+Preferir o fluxo oficial do Prisma para popular fixtures:
+
+```bash
+npx prisma db seed
+# ou
+npm run seed
+```
+
+Observação: os testes de integração agora usam `PrismaClient` programaticamente para executar uma pequena transação de verificação (connect/transaction/disconnect). O arquivo de script anterior (`scripts/run-prisma-integration.js`) foi removido para manter os testes autocontidos.
+
+
 ### Instalação
 
 1. **Clone o repositório**

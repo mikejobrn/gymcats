@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/prisma'
 import { getBrazilDate, getStartOfDay, getEndOfDay, formatDateForDB } from '@/lib/date-utils'
-import { createActivityRepository, createDailyScoreRepository, createClock, createScoreRules } from '@/app/providers'
+import { createActivityRepository, createDailyScoreRepository, createClock, createScoreRules, createUserRepository } from '@/app/providers'
 import { CalculateDailyScoreUseCase } from '@/core/usecases/calculate-daily-score'
 import { AddActivityUseCase } from '@/core/usecases/add-activity'
+import { GetRankingUseCase } from '@/core/usecases/get-ranking'
 
 export const SCORE_RULES = {
   water: {
@@ -55,18 +56,8 @@ export async function addActivity(userId: string, type: 'WATER' | 'RESISTANCE' |
 }
 
 export async function getUserRanking() {
-  const users = await prisma.user.findMany({
-    orderBy: [
-      { totalScore: 'desc' },
-      { streakDays: 'desc' },
-      { createdAt: 'asc' }
-    ],
-    take: 50
-  })
-  return users.map((user, index: number) => ({
-    user,
-    rank: index + 1,
-    totalScore: user.totalScore,
-    streakDays: user.streakDays
-  }))
+  const userRepo = createUserRepository()
+  const usecase = new GetRankingUseCase(userRepo)
+  const ranking = await usecase.execute(50)
+  return ranking
 }

@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "./prisma"
+import { createUserRepository } from '@/app/providers'
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
@@ -19,11 +20,8 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
-          }
-        })
+        const userRepo = createUserRepository()
+        const user = await userRepo.findByEmail(credentials.email)
 
         if (!user || !user.hashedPassword) {
           return null

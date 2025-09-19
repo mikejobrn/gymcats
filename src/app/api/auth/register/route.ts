@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
-import { prisma } from '@/lib/prisma'
+import { createUserRepository } from '@/app/providers'
+import { RegisterUserUseCase } from '@/core/usecases/register-user'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,38 +13,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se usuário já existe
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    })
+    const userRepo = createUserRepository()
+    const register = new RegisterUserUseCase(userRepo)
 
-    if (existingUser) {
+    try {
+      const user = await register.execute({ email, password, name })
       return NextResponse.json(
-        { error: 'Usuário já existe com este email' },
-        { status: 400 }
+        { message: 'Usuário criado com sucesso', userId: user.id },
+        { status: 201 }
       )
+    } catch (err: any) {
+      if (err?.message === 'USER_EXISTS') {
+        return NextResponse.json(
+          { error: 'Usuário já existe com este email' },
+          { status: 400 }
+        )
+      }
+      throw err
     }
-
-    // Hash da senha
-    const hashedPassword = await bcrypt.hash(password, 12)
-
-    // Criar usuário
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name: name || 'Gatinha',
-        hashedPassword,
-        totalScore: 0,
-        streakDays: 0,
-      },
-    })
-
-    return NextResponse.json(
-      { message: 'Usuário criado com sucesso', userId: user.id },
-      { status: 201 }
-    )
   } catch (error) {
     console.error('Erro ao criar usuário:', error)
     return NextResponse.json(

@@ -1,5 +1,6 @@
 import { prisma } from '../../../lib/prisma'
 import type { UserRepository } from '../../ports/user-repository'
+import type { UserCreateInput } from '@/core/types/user'
 
 export class PrismaUserRepository implements UserRepository {
   async findByEmail(email: string) {
@@ -10,6 +11,10 @@ export class PrismaUserRepository implements UserRepository {
   }
   async update(id: string, data: Record<string, any>) {
     return prisma.user.update({ where: { id }, data })
+  }
+
+  async create(data: UserCreateInput) {
+    return prisma.user.create({ data: data as any })
   }
 
   // convenience: fetch user with related dailyScores and activityLogs

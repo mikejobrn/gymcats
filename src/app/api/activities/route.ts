@@ -2,12 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { z } from 'zod'
-import { PrismaActivityRepository } from '@/core/adapters/prisma/prisma-activity-repo'
-import { PrismaDailyScoreRepository } from '@/core/adapters/prisma/prisma-daily-score-repo'
-import { PrismaBonusRepository } from '@/core/adapters/prisma/prisma-bonus-repo'
-import { SystemClock } from '@/core/adapters/clock/system-clock'
 import { AddActivityUseCase } from '@/core/usecases/add-activity'
-import { createDailyScoreRepository, createClock, createActivityRepository, createScoreRules, createBonusRepository } from '@/app/providers'
+import { createDailyScoreRepository, createClock, createActivityRepository, createScoreRules, createBonusRepository, createUserRepository } from '@/app/providers'
 // ...existing code...
 
 export async function GET() {
@@ -19,8 +15,8 @@ export async function GET() {
     }
     
     console.log('User email:', session.user.email)
-    const { prisma } = await import('@/lib/prisma')
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  const userRepo = createUserRepository()
+  const user = await userRepo.findByEmail(session.user.email)
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
@@ -61,9 +57,9 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const { type } = activitySchema.parse(body)
 
-    // Find user by email
-    const { prisma } = await import('@/lib/prisma')
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  // Find user by email via repository
+  const userRepo = createUserRepository()
+  const user = await userRepo.findByEmail(session.user.email)
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
