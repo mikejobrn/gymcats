@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { endOfDay, isSameDay, startOfDay } from 'date-fns'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import { format, addHours } from 'date-fns'
 
 export default async function Painel() {
   const session = await getServerSession(authOptions)
@@ -56,11 +57,31 @@ export default async function Painel() {
 
   console.log('Today\'s score:', todayScore)
 
+  // Prepare preformatted activity times (HH:mm) in Brazil timezone to keep server & client consistent
+  const activityTimes: Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined> = {
+    WATER: undefined,
+    RESISTANCE: undefined,
+    CARDIO: undefined
+  }
+
+  // activityLogs are ordered by date desc in the query above; pick the first (latest) completed per type
+  for (const log of user.activityLogs) {
+    if (!log.completed) continue
+    const type = log.type as 'WATER' | 'RESISTANCE' | 'CARDIO'
+    if (!activityTimes[type]) {
+      // Normalize date and shift to Brazil timezone consistently the same way the client used to
+      const dt = new Date(log.date)
+      const brazilDt = addHours(dt, 3)
+      activityTimes[type] = format(brazilDt, 'HH:mm')
+    }
+  }
+
   return (
-  <PainelClient 
+    <PainelClient 
       user={user}
       todayScore={todayScore}
       todayActivities={user.activityLogs}
+      initialActivityTimes={activityTimes}
     />
   )
 }

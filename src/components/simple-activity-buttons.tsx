@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Droplets, Dumbbell, Heart } from 'lucide-react'
-import { format, addHours } from 'date-fns'
+import { format } from 'date-fns'
 
 interface SimpleActivityButtonsProps {
   onActivityToggle: (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => void
@@ -12,9 +12,10 @@ interface SimpleActivityButtonsProps {
     cardio: boolean
   }
   activityTimes?: Record<'WATER'|'RESISTANCE'|'CARDIO', string | Date | undefined>
+  initialActivityTimes?: Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined>
 }
 
-export function SimpleActivityButtons({ onActivityToggle, completedActivities, activityTimes }: SimpleActivityButtonsProps) {
+export function SimpleActivityButtons({ onActivityToggle, completedActivities, activityTimes, initialActivityTimes }: SimpleActivityButtonsProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null)
 
   const activities = [
@@ -88,16 +89,15 @@ export function SimpleActivityButtons({ onActivityToggle, completedActivities, a
             </div>
             {activity.completed && (
               <div className="font-semibold text-lg text-green-600 ml-auto">
-                {activityTimes && activityTimes[activity.type] && (
-                  format(
-                    addHours(
-                      typeof activityTimes[activity.type] === 'string'
-                        ? new Date(activityTimes[activity.type]!)
-                        : activityTimes[activity.type] as Date,
-                      3
-                    ),
-                    'HH:mm'
-                  )
+                {(
+                  // Prefer server-provided preformatted time string to avoid hydration mismatch
+                  (initialActivityTimes && initialActivityTimes[activity.type])
+                  || (activityTimes && activityTimes[activity.type] && (
+                    // If the activity time is a Date or ISO string, format it on the client using HH:mm in user's locale
+                    typeof activityTimes[activity.type] === 'string'
+                      ? format(new Date(activityTimes[activity.type]!), 'HH:mm')
+                      : format(activityTimes[activity.type] as Date, 'HH:mm')
+                  ))
                 )}
               </div>
             )}

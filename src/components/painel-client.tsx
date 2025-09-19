@@ -15,6 +15,7 @@ interface PainelClientProps {
   user: UserWithRelations
   todayScore: DailyScore | undefined
   todayActivities: ActivityLog[]
+  initialActivityTimes?: Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined>
 }
 
 export function PainelClient({ user, todayScore, todayActivities }: PainelClientProps) {
@@ -25,6 +26,7 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
     cardio: todayScore?.cardioCompleted ?? false
   })
   const [localTodayActivities, setLocalTodayActivities] = useState<ActivityLog[]>(todayActivities)
+  const [initialActivityTimes] = useState<Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined>>(arguments[0]?.initialActivityTimes ?? { WATER: undefined, RESISTANCE: undefined, CARDIO: undefined })
 
   const handleActivityToggle = async (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => {
     console.log('=== INICIO handleActivityToggle ===')
@@ -99,10 +101,12 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
         <SimpleActivityButtons 
           onActivityToggle={handleActivityToggle}
           completedActivities={completedActivities}
+          // Use server-provided preformatted times for initial render to avoid hydration mismatch
           activityTimes={localTodayActivities.reduce((acc, act) => {
             if (act.completed) acc[act.type] = act.date;
             return acc;
           }, {} as Record<'WATER'|'RESISTANCE'|'CARDIO', string | Date | undefined>)}
+          initialActivityTimes={initialActivityTimes}
         />
       </main>
     </div>
