@@ -18,10 +18,7 @@ export default async function Painel() {
   const startOfToday = startOfDay(nowBrazil)
   const endOfToday = endOfDay(nowBrazil)
 
-  console.log('Current time UTC:', nowUTC)
-  console.log('Current time Brazil:', nowBrazil)
-  console.log('Start of today Brazil:', startOfToday)
-  console.log('End of today Brazil:', endOfToday)
+  // Debug logs removed
 
   const user = await prisma.user.findUnique({
     where: { email: session.user?.email ?? '' },
@@ -42,19 +39,16 @@ export default async function Painel() {
     }
   })
 
-  console.log('User fetched for painel:', user)
+  // Debug logs removed
 
   if (!user) {
     redirect('/auth/signin')
   }
 
   // Find today's score - compare with Brazil date
-  const todayScore = user.dailyScores.find(score => {
-    console.log('Checking score date (Brazil):', score.date, 'against today (Brazil):', nowBrazil)
-    return isSameDay(score.date, nowBrazil);
-  })
+  const todayScore = user.dailyScores.find(score => isSameDay(score.date, nowBrazil))
 
-  console.log('Today\'s score:', todayScore)
+  // Debug logs removed
 
   return (
   <PainelClient 

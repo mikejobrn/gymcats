@@ -23,13 +23,9 @@ export const SCORE_RULES = {
 }
 
 export async function calculateDailyScore(userId: string, date: Date) {
-  console.log('=== calculateDailyScore chamado ===')
-  console.log('userId:', userId, 'date:', date)
-  
+  // calculateDailyScore invoked
   const startOfDay = getStartOfDay(date)
   const endOfDay = getEndOfDay(date)
-  console.log('Período do dia:', { startOfDay, endOfDay })
-
   // Get all activities for the day
   const activities = await prisma.activityLog.findMany({
     where: {
@@ -41,8 +37,6 @@ export async function calculateDailyScore(userId: string, date: Date) {
     }
   })
 
-  console.log('Atividades encontradas para o dia:', activities)
-
   let score = 0
   let waterCompleted = false
   let resistanceCompleted = false
@@ -52,8 +46,6 @@ export async function calculateDailyScore(userId: string, date: Date) {
   const hasWater = activities.some((a) => a.type === 'WATER' && a.completed)
   const hasResistance = activities.some((a) => a.type === 'RESISTANCE' && a.completed)
   const hasCardio = activities.some((a) => a.type === 'CARDIO' && a.completed)
-  
-  console.log('Verificações de atividade:', { hasWater, hasResistance, hasCardio })
   
   if (hasWater) {
     score += SCORE_RULES.water.points
@@ -77,7 +69,7 @@ export async function calculateDailyScore(userId: string, date: Date) {
     cardioCompleted
   }
   
-  console.log('Resultado calculateDailyScore:', result)
+  // result prepared
   return result
 }
 
@@ -85,17 +77,11 @@ export async function addActivity(
   userId: string,
   type: 'WATER' | 'RESISTANCE' | 'CARDIO'
 ) {
-  console.log('=== addActivity chamado ===')
-  console.log('userId:', userId, 'type:', type)
-  
+  // addActivity invoked
   const now = getBrazilDate()
-  console.log('Data atual (Brasil):', now)
-  
-  // Check if activity already exists for today
+  // determine today's period in Brazil time
   const startOfDay = getStartOfDay(now)
   const endOfDay = getEndOfDay(now)
-  console.log('Início do dia:', startOfDay)
-  console.log('Fim do dia:', endOfDay)
 
   const existingActivity = await prisma.activityLog.findFirst({
     where: {
@@ -108,12 +94,10 @@ export async function addActivity(
     }
   })
 
-  console.log('Atividade existente encontrada:', existingActivity)
-
+  // existingActivity (if any) found
   let activity
   if (existingActivity) {
-    // Update existing activity to toggle completed status
-    console.log('Toggleando atividade existente de', existingActivity.completed, 'para', !existingActivity.completed)
+  // Update existing activity to toggle completed status
     activity = await prisma.activityLog.update({
       where: { id: existingActivity.id },
       data: {
@@ -122,7 +106,7 @@ export async function addActivity(
       }
     })
   } else {
-    console.log('Criando nova atividade como completed: true')
+  // Creating new activity as completed
     // Create new activity
     activity = await prisma.activityLog.create({
       data: {
@@ -134,20 +118,12 @@ export async function addActivity(
     })
   }
 
-  console.log('Atividade após operação:', activity)
-
   // Calculate daily score
   const dailyScore = await calculateDailyScore(userId, now)
-  console.log('Score diário calculado:', dailyScore)
 
   // Update or create daily score record - using date without time for consistency
   const dateForScore = formatDateForDB(now)
-  console.log('Data para o score:', dateForScore)
-  
-  // Defensive upsert: findUnique then update or create to avoid P2025 when
-  // a related record is missing or when the compound unique key behaves
-  // unexpectedly in our runtime environment.
-  console.log('Tentando localizar DailyScore existente para:', { userId, dateForScore })
+  // Defensive upsert approach for daily score
   const existingScore = await prisma.dailyScore.findUnique({
     where: {
       userId_date: {
@@ -159,7 +135,7 @@ export async function addActivity(
 
   let upsertedScore
   if (existingScore) {
-    console.log('DailyScore existente encontrado, atualizando...', existingScore.id)
+  // updating existing daily score
     upsertedScore = await prisma.dailyScore.update({
       where: { id: existingScore.id },
       data: {
@@ -170,7 +146,7 @@ export async function addActivity(
       }
     })
   } else {
-    console.log('Nenhum DailyScore encontrado, criando um novo registro')
+  // creating new daily score
     upsertedScore = await prisma.dailyScore.create({
       data: {
         userId,
@@ -182,8 +158,6 @@ export async function addActivity(
       }
     })
   }
-
-  console.log('Score atualizado/criado:', upsertedScore)
 
   // Update user's total score
   const totalScore = await prisma.dailyScore.aggregate({
@@ -199,7 +173,7 @@ export async function addActivity(
     }
   })
 
-  console.log('=== Fim addActivity ===')
+  // End addActivity
   return activity
 }
 

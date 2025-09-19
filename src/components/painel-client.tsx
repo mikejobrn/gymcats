@@ -29,9 +29,6 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
   const [initialActivityTimes] = useState<Record<'WATER'|'RESISTANCE'|'CARDIO', string | undefined>>(arguments[0]?.initialActivityTimes ?? { WATER: undefined, RESISTANCE: undefined, CARDIO: undefined })
 
   const handleActivityToggle = async (type: 'WATER' | 'RESISTANCE' | 'CARDIO') => {
-    console.log('=== INICIO handleActivityToggle ===')
-    console.log('Type:', type)
-    console.log('Estado atual completedActivities:', completedActivities)
     
     try {
       const response = await fetch('/api/activities', {
@@ -42,11 +39,10 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
         body: JSON.stringify({ type }),
       })
 
-      console.log('POST response status:', response.status)
+  // response status available if needed for debugging
 
       if (response.ok) {
         const postResult = await response.json()
-        console.log('POST result completo:', postResult)
         
         // Usar o estado atualizado diretamente da resposta do POST
         if (postResult.updatedScore) {
@@ -55,7 +51,7 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
             resistance: postResult.updatedScore.resistanceCompleted ?? false,
             cardio: postResult.updatedScore.cardioCompleted ?? false
           }
-          console.log('Estado atualizado diretamente da resposta POST:', newCompletedActivities)
+          // updated state applied from response
           setCompletedActivities(newCompletedActivities)
           setCurrentScore(postResult.updatedScore.score ?? 0)
         }
@@ -64,7 +60,7 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
         const today = new Date()
         const todayBrazil = new Date(today.getTime() - 3 * 60 * 60 * 1000)
         const dateStr = todayBrazil.toISOString().split('T')[0]
-        console.log('Buscando atividades para data:', dateStr)
+  // Fetching activities for date
         
         const activitiesRes = await fetch(`/api/activities/logs?date=${dateStr}&t=${Date.now()}`, {
           cache: 'no-store',
@@ -74,7 +70,7 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
         })
         if (activitiesRes.ok) {
           const { activities } = await activitiesRes.json()
-          console.log('Atividades retornadas:', activities)
+          // Activities returned and state updated
           setLocalTodayActivities(activities)
         }
       } else {
@@ -86,7 +82,7 @@ export function PainelClient({ user, todayScore, todayActivities }: PainelClient
       console.error('Erro ao registrar atividade:', error);
     }
     
-    console.log('=== FIM handleActivityToggle ===')
+    // handleActivityToggle finished
   };
 
   return (
